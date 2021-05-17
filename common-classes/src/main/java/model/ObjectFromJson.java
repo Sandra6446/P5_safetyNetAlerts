@@ -4,13 +4,15 @@ import lombok.Data;
 
 import java.util.List;
 
-
+/**
+ * This class groups all the data of Json data file : a list of persons, a list of firestations and a list of medical records.
+ */
 @Data
 public class ObjectFromJson {
 
     private List<Person> persons;
-    private List<FireStation> firestations;
-    private List<MedicalRecords> medicalrecords;
+    private List<Firestation> firestations;
+    private List<MedicalRecord> medicalrecords;
 
 }
 

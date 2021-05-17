@@ -7,7 +7,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 
 /**
- *
+ *  This class represents a person.
+ *  A person is characterized by a firstname, a lastname, an address, a city, a zip, a phone and an email.
+ *  All these parameters are required.
  */
 @Data
 public class Person {
@@ -28,3 +30,5 @@ public class Person {
     private String email;
 
 }
+
+

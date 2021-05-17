@@ -1,10 +1,13 @@
 package com.safetynetalert.microserviceperson.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynetalert.microserviceperson.dao.PersonDAO;
+import dao.PersonDAO;
+import exceptions.AlreadyInDataFileException;
+import exceptions.NotFoundInDataFileException;
 import model.Person;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.JUnitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,50 +32,76 @@ public class PersonControllerTest {
     @MockBean
     private PersonDAO personDAO;
 
-    private static Person person;
+    private static Person personForTest;
 
-    @BeforeEach
-    private void setUpPerTest() {
-        person = new Person();
-        person.setFirstName("FirstNameTest");
-        person.setLastName("LastNameTest");
-        person.setAddress("AddressTest");
-        person.setCity("CityTest");
-        person.setZip(64300);
-        person.setPhone("123-456-7890");
-        person.setEmail("test@email.com");
+    @BeforeAll
+    public static void setUp() {
+        personForTest = new Person();
+        personForTest.setFirstName("Sandra");
+        personForTest.setLastName("M");
+        personForTest.setAddress("Mon quartier");
+        personForTest.setZip(64000);
+        personForTest.setCity("Ma ville");
+        personForTest.setPhone("123-456-7890");
+        personForTest.setEmail("email@email.com");
     }
 
     @Test
     public void testadd() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        String personAsString = objectMapper.writeValueAsString(person);
-        when(personDAO.save(any(Person.class))).thenReturn(person);
+        String personAsString = objectMapper.writeValueAsString(personForTest);
 
+        when(personDAO.save(any(Person.class))).thenReturn(personForTest);
         mockMvc.perform(post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(status().isCreated());
+
+        when(personDAO.save(any(Person.class))).thenThrow(AlreadyInDataFileException.class);
+        mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(personAsString))
+                .andExpect(status().isConflict());
+
+        Person person = new Person();
+        personAsString = objectMapper.writeValueAsString(person);
+        mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(personAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testUpdate() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String personAsString = objectMapper.writeValueAsString(person);
-        when(personDAO.update(any(Person.class))).thenReturn(person);
+        String personAsString = objectMapper.writeValueAsString(personForTest);
 
+        when(personDAO.update(any(Person.class))).thenReturn(personForTest);
         mockMvc.perform(put("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(status().isOk());
+
+        when(personDAO.update(any(Person.class))).thenThrow(NotFoundInDataFileException.class);
+        mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(personAsString))
+                .andExpect(status().isNotFound());
+
+        Person person = new Person();
+        personAsString = objectMapper.writeValueAsString(person);
+        mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(personAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testDelete() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String personAsString = objectMapper.writeValueAsString(person);
+        String personAsString = objectMapper.writeValueAsString(personForTest);
 
         when(personDAO.remove(any(Person.class))).thenReturn(true);
         mockMvc.perform(delete("/person")
@@ -80,11 +109,11 @@ public class PersonControllerTest {
                 .content(personAsString))
                 .andExpect(status().isOk());
 
-        when(personDAO.remove(any(Person.class))).thenReturn(false);
+        when(personDAO.remove(any(Person.class))).thenThrow(NotFoundInDataFileException.class);
         mockMvc.perform(delete("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
-                .andExpect(status().isPreconditionFailed());
+                .andExpect(status().isNotFound());
     }
 
 }
