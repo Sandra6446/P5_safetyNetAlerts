@@ -39,8 +39,7 @@ public class PersonDAO {
         // A person already in data file may not be saved.
         boolean saveAuthorized =
                 (persons.stream()
-                        .filter(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName()))
-                        .count() == 0);
+                        .noneMatch(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName())));
 
         if (saveAuthorized) {
             objectFromJson.getPersons().add(person);
@@ -61,7 +60,7 @@ public class PersonDAO {
         ObjectFromJson objectFromJson = jsonMapper.readJson();
         List<Person> persons = objectFromJson.getPersons();
 
-        Person personUpdated = persons.stream()
+        boolean updateOk = persons.stream()
                 .filter(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName()))
                 .peek(personOfList -> {
                     personOfList.setAddress(person.getAddress());
@@ -70,17 +69,16 @@ public class PersonDAO {
                     personOfList.setPhone(person.getPhone());
                     personOfList.setEmail(person.getEmail());
                 })
-                .collect(Collectors.toList())
-                .get(0);
+                .count() == 1;
 
-        if (personUpdated != null) {
+        if (updateOk) {
             objectFromJson.setPersons(persons);
             jsonMapper.writeJson(objectFromJson);
         } else {
             throw new NotFoundInDataFileException(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
         }
 
-        return personUpdated;
+        return person;
     }
 
     /**
@@ -94,16 +92,15 @@ public class PersonDAO {
 
         boolean removeOk =
                 (persons.stream()
-                        .filter(personOfList -> personOfList.getLastName().equals(person.getLastName()) & personOfList.getFirstName().equals(person.getFirstName()))
-                        .count() == 1);
+                        .anyMatch(personOfList -> personOfList.getLastName().equals(person.getLastName()) & personOfList.getFirstName().equals(person.getFirstName())));
 
-        if (removeOk == true) {
+        if (removeOk) {
             persons.remove(person);
             objectFromJson.setPersons(persons);
             jsonMapper.writeJson(objectFromJson);
         } else {
             throw new NotFoundInDataFileException(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
         }
-        return removeOk;
+        return true;
     }
 }

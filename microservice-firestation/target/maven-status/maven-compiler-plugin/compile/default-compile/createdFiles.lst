@@ -1,0 +1,3 @@
+com\safetynetalert\microservicefirestation\controller\FirestationController.class
+com\safetynetalert\microservicefirestation\dao\FirestationDAO.class
+com\safetynetalert\microservicefirestation\MicroserviceFirestationApplication.class

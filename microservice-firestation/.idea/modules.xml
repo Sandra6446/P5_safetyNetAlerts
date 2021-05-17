@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../common-classes/common-classes.iml" filepath="$PROJECT_DIR$/../common-classes/common-classes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../microservice-firestation/microservice-firestation.iml" filepath="$PROJECT_DIR$/../../microservice-firestation/microservice-firestation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../microservice-person/microservice-person.iml" filepath="$PROJECT_DIR$/../microservice-person/microservice-person.iml" />
+    </modules>
+  </component>
+</project>
