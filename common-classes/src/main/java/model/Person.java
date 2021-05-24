@@ -1,10 +1,11 @@
 package model;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *  This class represents a person.
@@ -14,18 +15,24 @@ import javax.validation.constraints.Min;
 @Data
 public class Person {
 
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size(min = 1, message = "Cette donnée est obligatoire")
     private String firstName;
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size (min = 1, message = "Cette donnée est obligatoire")
     private String lastName;
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size (min = 1, message = "Cette donnée est obligatoire")
     private String address;
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size (min = 1, message = "Cette donnée est obligatoire")
     private String city;
     @Min(value = 10000, message = "Le code postal doit comporter 5 chifres")
     private int zip;
-    @Length(min = 12)
+    @NotNull
+    @Size(min = 12)
     private String phone;
+    @NotNull
     @Email
     private String email;
 

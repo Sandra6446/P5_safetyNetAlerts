@@ -1,5 +1,0 @@
-model\MedicalRecords.class
-model\FireStation.class
-model\ObjectFromJson.class
-model\Person.class
-util\JsonMapper.class

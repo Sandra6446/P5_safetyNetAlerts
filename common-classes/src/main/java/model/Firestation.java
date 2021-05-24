@@ -1,7 +1,9 @@
 package model;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *  This class represents a firestation.
@@ -11,9 +13,11 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class Firestation {
 
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size(min = 1, message = "Cette donnée est obligatoire")
     private String address;
-    @Length (min = 1, message = "Cette donnée est obligatoire")
+    @NotNull
+    @Size (min = 1, message = "Cette donnée est obligatoire")
     private String station;
 
 }
