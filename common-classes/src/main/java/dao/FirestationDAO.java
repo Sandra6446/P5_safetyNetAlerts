@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 import util.JsonMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+/**
+ * To add, update and remove firestations data in data file.
+ */
 
 @Component
 @Import(value = JsonMapper.class)
@@ -23,6 +26,10 @@ public class FirestationDAO {
     @Autowired
     private JsonMapper jsonMapper;
 
+    /**
+     * @param firestation The firestation to be added.
+     * @return If the firestation to be added is already in data base, then "null" is returned, otherwise, the firestation added is returned.
+     */
     public Firestation save(Firestation firestation) throws AlreadyInDataFileException {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();
@@ -43,6 +50,10 @@ public class FirestationDAO {
 
     }
 
+    /**
+     * @param firestation The firestation to be updated.
+     * @return If the firestation to be updated isn't in data base, then "null" is returned, otherwise, the firestation updated is returned.
+     */
     public Firestation update(Firestation firestation) {
         ObjectFromJson objectFromJson = jsonMapper.readJson();
         List<Firestation> firestations = objectFromJson.getFirestations();
@@ -50,9 +61,7 @@ public class FirestationDAO {
         boolean updateOk =
                 (firestations.stream()
                         .filter(firestationOfList -> firestationOfList.getAddress().equals(firestation.getAddress()))
-                        .peek(firestationOfList -> {
-                            firestationOfList.setStation(firestation.getStation());
-                        })
+                        .peek(firestationOfList -> firestationOfList.setStation(firestation.getStation()))
                         .count() == 1);
 
         if (updateOk) {
@@ -65,6 +74,10 @@ public class FirestationDAO {
         return firestation;
     }
 
+    /**
+     * @param firestation The firestation to be removed.
+     * @return true if the removal is ok, false if the removal is ko
+     */
     public boolean remove(Firestation firestation) {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();

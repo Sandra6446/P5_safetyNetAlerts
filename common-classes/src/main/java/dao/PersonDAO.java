@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import util.JsonMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * To add, update and remove persons data in data file.
@@ -83,7 +82,7 @@ public class PersonDAO {
 
     /**
      * @param person The person to be removed.
-     * @return
+     * @return true if the removal is ok, false if the removal is ko
      */
     public boolean remove(Person person) {
 

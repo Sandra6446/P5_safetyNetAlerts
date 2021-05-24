@@ -1,3 +1,2 @@
-com\safetynetalert\microservicefirestation\controller\FirestationController.class
-com\safetynetalert\microservicefirestation\dao\FirestationDAO.class
-com\safetynetalert\microservicefirestation\MicroserviceFirestationApplication.class
+com\safetynetalerts\microservicefirestation\MicroserviceFirestationApplication.class
+com\safetynetalerts\microservicefirestation\controller\FirestationController.class
