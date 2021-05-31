@@ -7,21 +7,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="microservice-person" />
+        <module name="microservice-medicalRecord" />
         <module name="common-classes" />
+        <module name="microservice-person" />
         <module name="microservice-firestation" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="common-classes" target="1.8" />
+      <module name="common-classes" target="8" />
+      <module name="common-classes2" target="8" />
       <module name="microservice-firestation" target="1.8" />
+      <module name="microservice-medicalRecord" target="1.8" />
       <module name="microservice-person" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="common-classes" options="-parameters" />
+      <module name="common-classes" options="" />
       <module name="microservice-firestation" options="-parameters" />
+      <module name="microservice-medicalRecord" options="-parameters" />
       <module name="microservice-person" options="-parameters" />
     </option>
   </component>

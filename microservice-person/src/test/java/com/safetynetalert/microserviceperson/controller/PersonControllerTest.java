@@ -1,13 +1,13 @@
 package com.safetynetalert.microserviceperson.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynetalert.microserviceperson.controller.PersonController;
 import dao.PersonDAO;
 import exceptions.AlreadyInDataFileException;
 import exceptions.NotFoundInDataFileException;
 import model.Person;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.JUnitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
