@@ -3,13 +3,11 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../microservice-person/pom.xml" />
         <option value="$PROJECT_DIR$/../common-class/pom.xml" />
         <option value="$PROJECT_DIR$/../common-classes/pom.xml" />
         <option value="$PROJECT_DIR$/../../microservice-firestation/pom.xml" />
         <option value="$PROJECT_DIR$/../microservice-medicalrecords/pom.xml" />
-        <option value="$PROJECT_DIR$/../microservice-medicalRecord/pom.xml" />
+        <option value="$PROJECT_DIR$/../safetyNetAlerts/pom.xml" />
       </list>
     </option>
   </component>

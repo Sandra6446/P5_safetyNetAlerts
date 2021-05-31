@@ -7,10 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="microservice-medicalRecord" />
         <module name="common-classes" />
-        <module name="microservice-person" />
-        <module name="microservice-firestation" />
+        <module name="safetyNetAlerts" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,6 +17,7 @@
       <module name="microservice-firestation" target="1.8" />
       <module name="microservice-medicalRecord" target="1.8" />
       <module name="microservice-person" target="1.8" />
+      <module name="safetyNetAlerts" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -27,6 +26,7 @@
       <module name="microservice-firestation" options="-parameters" />
       <module name="microservice-medicalRecord" options="-parameters" />
       <module name="microservice-person" options="-parameters" />
+      <module name="safetyNetAlerts" options="-parameters" />
     </option>
   </component>
 </project>
