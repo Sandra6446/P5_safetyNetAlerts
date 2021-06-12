@@ -1,35 +1,55 @@
 package dao;
 
+import util.JsonMapper;
 import exceptions.AlreadyInDataFileException;
 import exceptions.NotFoundInDataFileException;
 import model.Firestation;
 import model.ObjectFromJson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
-import util.JsonMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * To add, update and remove firestations data in data file.
  */
 
 @Component
-@Import(value = JsonMapper.class)
-public class FirestationDAO {
+public class FirestationDAO implements IDataInJsonDao<Firestation> {
 
     private static final Logger logger = LogManager.getLogger(PersonDAO.class);
 
-    @Autowired
-    private JsonMapper jsonMapper;
+    private JsonMapper jsonMapper = new JsonMapper();
+
+    @Override
+    public List<Firestation> getAll() {
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        return objectFromJson.getFirestations();
+    }
+
+    public List<Firestation> getByAddress(String address) {
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        return objectFromJson.getFirestations()
+                .stream()
+                .filter(firestation -> firestation.getAddress().equals(address))
+                .collect(Collectors.toList());
+    }
+
+    public List<Firestation> getByStation(String station) {
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        return objectFromJson.getFirestations()
+                .stream()
+                .filter(firestation -> firestation.getStation().equals(station))
+                .collect(Collectors.toList());
+    }
 
     /**
      * @param firestation The firestation to be added.
      * @return If the firestation to be added is already in data base, then "null" is returned, otherwise, the firestation added is returned.
      */
+    @Override
     public Firestation save(Firestation firestation) throws AlreadyInDataFileException {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();
@@ -54,6 +74,7 @@ public class FirestationDAO {
      * @param firestation The firestation to be updated.
      * @return If the firestation to be updated isn't in data base, then "null" is returned, otherwise, the firestation updated is returned.
      */
+    @Override
     public Firestation update(Firestation firestation) {
         ObjectFromJson objectFromJson = jsonMapper.readJson();
         List<Firestation> firestations = objectFromJson.getFirestations();
@@ -78,6 +99,7 @@ public class FirestationDAO {
      * @param firestation The firestation to be removed.
      * @return true if the removal is ok, false if the removal is ko
      */
+    @Override
     public boolean remove(Firestation firestation) {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();

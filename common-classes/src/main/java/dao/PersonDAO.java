@@ -1,5 +1,6 @@
 package dao;
 
+import util.JsonMapper;
 import exceptions.AlreadyInDataFileException;
 import exceptions.NotFoundInDataFileException;
 import model.ObjectFromJson;
@@ -7,29 +8,57 @@ import model.Person;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
-import util.JsonMapper;
+
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * To add, update and remove persons data in data file.
  */
 
 @Component
-@Import(value = JsonMapper.class)
-public class PersonDAO {
+public class PersonDAO implements IDataInJsonDao<Person> {
 
     private static final Logger logger = LogManager.getLogger(PersonDAO.class);
 
-    @Autowired
-    private JsonMapper jsonMapper;
+    private JsonMapper jsonMapper = new JsonMapper();
+
+    @Override
+    public List<Person> getAll() {
+
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        List<Person> persons = objectFromJson.getPersons();
+
+        return persons;
+    }
+
+    public List<Person> getByAddress(String address) {
+
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        List<Person> persons = objectFromJson.getPersons()
+                .stream()
+                .filter(person -> person.getAddress().equals(address))
+                .collect(Collectors.toList());
+        return persons;
+    }
+
+    public Person getByName(String firstName, String lastName) {
+
+        ObjectFromJson objectFromJson = jsonMapper.readJson();
+        List<Person> persons = objectFromJson.getPersons()
+                .stream()
+                .filter(person -> person.getFirstName().equals(firstName) & person.getLastName().equals(lastName))
+                .collect(Collectors.toList());
+        return persons.get(0);
+    }
 
     /**
      * @param person The person to be added.
      * @return If the person to be added is already in data base, then "null" is returned, otherwise, the person added is returned.
      */
+    @Override
     public Person save(Person person) throws AlreadyInDataFileException {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();
@@ -54,6 +83,7 @@ public class PersonDAO {
      * @param person The person to be updated.
      * @return If the person to be updated isn't in data base, then "null" is returned, otherwise, the person updated is returned.
      */
+    @Override
     public Person update(Person person) {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();
@@ -63,8 +93,8 @@ public class PersonDAO {
                 .filter(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName()))
                 .peek(personOfList -> {
                     personOfList.setAddress(person.getAddress());
-                    personOfList.setZip(person.getZip());
                     personOfList.setCity(person.getCity());
+                    personOfList.setZip(person.getZip());
                     personOfList.setPhone(person.getPhone());
                     personOfList.setEmail(person.getEmail());
                 })
@@ -84,6 +114,7 @@ public class PersonDAO {
      * @param person The person to be removed.
      * @return true if the removal is ok, false if the removal is ko
      */
+    @Override
     public boolean remove(Person person) {
 
         ObjectFromJson objectFromJson = jsonMapper.readJson();

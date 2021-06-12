@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -8,9 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *  This class represents a person.
- *  A person is characterized by a firstname, a lastname, an address, a city, a zip, a phone and an email.
- *  All these parameters are required.
+ * This class represents a person.
+ * A person is characterized by a firstname, a lastname, an address, a city, a zip, a phone and an email.
+ * All these parameters are required.
  */
 @Data
 public class Person {
@@ -19,13 +20,13 @@ public class Person {
     @Size(min = 1, message = "Cette donnée est obligatoire")
     private String firstName;
     @NotNull
-    @Size (min = 1, message = "Cette donnée est obligatoire")
+    @Size(min = 1, message = "Cette donnée est obligatoire")
     private String lastName;
     @NotNull
-    @Size (min = 1, message = "Cette donnée est obligatoire")
+    @Size(min = 1, message = "Cette donnée est obligatoire")
     private String address;
     @NotNull
-    @Size (min = 1, message = "Cette donnée est obligatoire")
+    @Size(min = 1, message = "Cette donnée est obligatoire")
     private String city;
     @Min(value = 10000, message = "Le code postal doit comporter 5 chifres")
     private int zip;

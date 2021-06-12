@@ -3,7 +3,6 @@ package model;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -27,4 +26,5 @@ public class MedicalRecord {
     private String birthdate;
     private List<String> medications;
     private List<String> allergies;
+
 }

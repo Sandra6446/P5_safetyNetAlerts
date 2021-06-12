@@ -19,9 +19,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import util.JsonMapper;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PersonController.class)
 public class PersonControllerTest {
@@ -42,9 +39,9 @@ public class PersonControllerTest {
         personForTest = new Person();
         personForTest.setFirstName("Sandra");
         personForTest.setLastName("M");
-        personForTest.setAddress("Mon quartier");
-        personForTest.setZip(64000);
+        personForTest.setAddress("Mon adresse");
         personForTest.setCity("Ma ville");
+        personForTest.setZip(64000);
         personForTest.setPhone("123-456-7890");
         personForTest.setEmail("email@email.com");
     }

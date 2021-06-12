@@ -16,9 +16,9 @@ public class Firestation {
 
     @NotNull
     @Size(min = 1, message = "Cette donnée est obligatoire")
-    private String address;
+    protected String address;
     @NotNull
     @Size (min = 1, message = "Cette donnée est obligatoire")
-    private String station;
+    protected String station;
 
 }
