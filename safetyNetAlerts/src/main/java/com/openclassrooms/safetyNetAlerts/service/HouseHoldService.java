@@ -1,54 +1,64 @@
 package com.openclassrooms.safetyNetAlerts.service;
 
-import com.openclassrooms.safetyNetAlerts.model.Adult;
-import com.openclassrooms.safetyNetAlerts.model.Child;
-import com.openclassrooms.safetyNetAlerts.model.PersonInfo;
-import com.openclassrooms.safetyNetAlerts.dao.MedicalRecordDAO;
-import com.openclassrooms.safetyNetAlerts.model.MedicalRecord;
-import com.openclassrooms.safetyNetAlerts.model.Person;
+import com.openclassrooms.safetyNetAlerts.dao.PersonDAO;
+import com.openclassrooms.safetyNetAlerts.model.*;
 
-public class PersonInfoService {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    private static final MedicalRecordDAO medicalRecordDAO = new MedicalRecordDAO();
+public class HouseHoldService {
 
-    public static class PersonInfoBuilder {
+    private static final PersonDAO personDAO = new PersonDAO();
 
-        private Person person;
+    public static class HouseHoldBuilder {
 
-        public PersonInfoBuilder withFullName(Person person) {
-            this.person = person;
+        private String address;
+        private boolean onlyChild = false;
+
+        public HouseHoldBuilder withAddress(String address) {
+            this.address = address;
             return this;
         }
 
-        public PersonInfo build() {
-            Adult adult = new Adult();
-            Child child = new Child();
-            MedicalRecord medicalRecord = medicalRecordDAO.getByName(person.getFirstName(), person.getLastName());
-            int age = GetAge.getAge(medicalRecord.getBirthdate());
-            if (age < 18) {
-                child.setFirstName(person.getFirstName());
-                child.setLastName(person.getLastName());
-                child.setAddress(person.getAddress());
-                child.setCity(person.getCity());
-                child.setZip(person.getZip());
-                child.setPhone(person.getPhone());
-                child.setEmail(person.getEmail());
-                child.setMedicalRecord(medicalRecord);
-                child.setAge(age);
-                return child;
-            } else {
-                adult.setFirstName(person.getFirstName());
-                adult.setLastName(person.getLastName());
-                adult.setAddress(person.getAddress());
-                adult.setCity(person.getCity());
-                adult.setZip(person.getZip());
-                adult.setPhone(person.getPhone());
-                adult.setEmail(person.getEmail());
-                adult.setMedicalRecord(medicalRecord);
-                adult.setAge(age);
-                return adult;
+        public HouseHoldBuilder onlyWithChild() {
+            this.onlyChild = true;
+            return this;
+        }
+
+        public HouseHold build() {
+            HouseHold houseHold = new HouseHold();
+            List<Person> persons = personDAO.getByAddress(address);
+
+            houseHold.setAddress(address);
+            /*
+             houseHold.setCity(persons.get(0).getCity());
+             houseHold.setZip(persons.get(0).getZip());
+            */
+
+            List<PersonInfo> children = new ArrayList<>();
+            List<PersonInfo> adults = new ArrayList<>();
+            for (Person person : persons) {
+                PersonInfo personInfo = new PersonInfoService.PersonInfoBuilder().withPerson(person).build();
+                if (personInfo.getAge()<18) {
+                    children.add(personInfo);
+                } else {
+                    adults.add(personInfo);
+                }
             }
 
+            if (onlyChild) {
+                if (!children.isEmpty()) {
+                    houseHold.addHouseHoldMembers(children);
+                    houseHold.addHouseHoldMembers(adults.stream().peek(personInfo -> personInfo.setAge(0)).collect(Collectors.toList()));
+                }
+            } else {
+                houseHold.addHouseHoldMembers(children);
+                houseHold.addHouseHoldMembers(adults);
+            }
+
+            return houseHold;
         }
     }
 }
+

@@ -1,6 +1,5 @@
-package model;
+package com.openclassrooms.safetyNetAlerts.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -13,6 +12,7 @@ import javax.validation.constraints.Size;
  * A person is characterized by a firstname, a lastname, an address, a city, a zip, a phone and an email.
  * All these parameters are required.
  */
+
 @Data
 public class Person {
 

@@ -1,48 +1,35 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.openclassrooms.safetyNetAlerts.constants.FilterName;
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
-import com.openclassrooms.safetyNetAlerts.service.HouseHoldService;
+import com.openclassrooms.safetyNetAlerts.model.PhoneAlert;
+import com.openclassrooms.safetyNetAlerts.service.PhoneAlertService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This url returns a list of children (any individual aged 18 or under) living at this address.
- * The list includes each child's first and last name, age and a list of other household members.
- * If there are no children, this url returns an empty string.
+ * This url returns a list of telephone numbers of residents served by the firestation.
+ * It will be used to send emergency text messages to specific households.
  */
 
 @RestController
-@RequestMapping("/childAlert")
-public class ChildAlertController {
+@RequestMapping("/phoneAlert")
+public class PhoneAlertController {
 
-    private static final Logger logger = LogManager.getLogger(ChildAlertController.class);
+    private static final Logger logger = LogManager.getLogger(PhoneAlertController.class);
 
     @GetMapping
-    public MappingJacksonValue getChildInfos(@RequestParam("address") String address) {
+    public PhoneAlert getPhoneNumbers(@RequestParam("firestation") String firestation) {
 
-        if (address.isEmpty()) {
-            logger.error("Address is required");
+        if (firestation.isEmpty()) {
+            logger.error("Firestation is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
-        } else {
-            FilterProvider filters = new SimpleFilterProvider()
-                    .addFilter(FilterName.HOUSEHOLD, SimpleBeanPropertyFilter.serializeAllExcept("address"))
-                    .addFilter(FilterName.ADULTS, SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName"))
-                    .addFilter(FilterName.CHILDREN, SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "age"));
-            MappingJacksonValue response = new MappingJacksonValue(new HouseHoldService.HouseHoldBuilder().withAddress(address).onlyWithChild().build());
-
-            response.setFilters(filters);
-
-            return response;
-        }
+            } else {
+                return new PhoneAlertService.PhoneAlertBuilder().withStation(firestation).build();
+            }
     }
 }
 

@@ -1,4 +1,4 @@
-package model;
+package com.openclassrooms.safetyNetAlerts.model;
 
 import lombok.Data;
 

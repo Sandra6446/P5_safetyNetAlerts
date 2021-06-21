@@ -1,5 +1,6 @@
-package model;
+package com.openclassrooms.safetyNetAlerts.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,7 @@ public class MedicalRecord {
     @Size (min = 1, message = "Cette donnée est obligatoire")
     private String lastName;
     @NotNull
-    @Size (min = 10, message = "Cette donnée doit être au format XX/XX/XXXX")
+    @Size(min = 10, message = "Cette donnée doit être au format XX/XX/XXXX")
     private String birthdate;
     private List<String> medications;
     private List<String> allergies;

@@ -1,10 +1,10 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.MedicalRecordDAO;
-import exceptions.AlreadyInDataFileException;
-import exceptions.NotFoundInDataFileException;
-import model.MedicalRecord;
+import com.openclassrooms.safetyNetAlerts.dao.MedicalRecordDAO;
+import com.openclassrooms.safetyNetAlerts.exceptions.AlreadyInDataFileException;
+import com.openclassrooms.safetyNetAlerts.exceptions.NotFoundInDataFileException;
+import com.openclassrooms.safetyNetAlerts.model.MedicalRecord;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import util.JsonMapper;
+import com.openclassrooms.safetyNetAlerts.util.JsonMapper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

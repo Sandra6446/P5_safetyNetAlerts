@@ -4,8 +4,9 @@ package com.openclassrooms.safetyNetAlerts.controller;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.openclassrooms.safetyNetAlerts.service.DataOrganizationService;
-import exceptions.BadRequestException;
+import com.openclassrooms.safetyNetAlerts.constants.FilterName;
+import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
+import com.openclassrooms.safetyNetAlerts.service.CoverageByStationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -29,8 +30,6 @@ public class FirestationRequestController {
 
     private static final Logger logger = LogManager.getLogger(FirestationRequestController.class);
 
-    DataOrganizationService dataOrganizationService = new DataOrganizationService();
-
     @GetMapping
     public MappingJacksonValue getDataPerFirestation(@RequestParam("stationNumber") String station) {
 
@@ -38,15 +37,17 @@ public class FirestationRequestController {
             logger.error("Station number is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
+            FilterProvider filters = new SimpleFilterProvider()
+                    .addFilter(FilterName.PERSON_INFO, SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "address", "phone"));
 
-            FilterProvider listOfFilters = new SimpleFilterProvider()
-                    .addFilter("personInPersonInfo", SimpleBeanPropertyFilter.filterOutAllExcept("firstName","lastName","address","phone"))
-                    .addFilter("personInfo", SimpleBeanPropertyFilter.serializeAllExcept("medicalRecord"));
-            MappingJacksonValue dataPerFirestation = new MappingJacksonValue(dataOrganizationService.getByStation(station));
-            dataPerFirestation.setFilters(listOfFilters);
+            MappingJacksonValue response = new MappingJacksonValue(new CoverageByStationService.CoverageByStationBuilder().withStation(station).build());
 
-            return dataPerFirestation;
+            response.setFilters(filters);
+
+            return response;
         }
+
+
     }
 }
 

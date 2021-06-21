@@ -1,10 +1,10 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
-import dao.FirestationDAO;
-import exceptions.AlreadyInDataFileException;
-import exceptions.BadRequestException;
-import exceptions.NotFoundInDataFileException;
-import model.Firestation;
+import com.openclassrooms.safetyNetAlerts.dao.FirestationDAO;
+import com.openclassrooms.safetyNetAlerts.exceptions.AlreadyInDataFileException;
+import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
+import com.openclassrooms.safetyNetAlerts.exceptions.NotFoundInDataFileException;
+import com.openclassrooms.safetyNetAlerts.model.Firestation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

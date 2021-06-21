@@ -1,4 +1,4 @@
-package model;
+package com.openclassrooms.safetyNetAlerts.model;
 
 import lombok.Data;
 
@@ -16,9 +16,9 @@ public class Firestation {
 
     @NotNull
     @Size(min = 1, message = "Cette donnée est obligatoire")
-    protected String address;
+    private String address;
     @NotNull
     @Size (min = 1, message = "Cette donnée est obligatoire")
-    protected String station;
+    private String station;
 
 }

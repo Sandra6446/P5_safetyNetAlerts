@@ -1,4 +1,4 @@
-package dao;
+package com.openclassrooms.safetyNetAlerts.dao;
 
 import java.util.List;
 

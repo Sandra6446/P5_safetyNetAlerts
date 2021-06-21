@@ -1,10 +1,10 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
-import dao.MedicalRecordDAO;
-import exceptions.AlreadyInDataFileException;
-import exceptions.BadRequestException;
-import exceptions.NotFoundInDataFileException;
-import model.MedicalRecord;
+import com.openclassrooms.safetyNetAlerts.dao.MedicalRecordDAO;
+import com.openclassrooms.safetyNetAlerts.exceptions.AlreadyInDataFileException;
+import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
+import com.openclassrooms.safetyNetAlerts.exceptions.NotFoundInDataFileException;
+import com.openclassrooms.safetyNetAlerts.model.MedicalRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

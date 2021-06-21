@@ -1,38 +1,39 @@
 package com.openclassrooms.safetyNetAlerts.service;
 
-import com.openclassrooms.safetyNetAlerts.model.Adult;
-import dao.MedicalRecordDAO;
-import dao.PersonDAO;
-import model.MedicalRecord;
-import model.Person;
+import com.openclassrooms.safetyNetAlerts.model.PersonInfo;
+import com.openclassrooms.safetyNetAlerts.dao.MedicalRecordDAO;
+import com.openclassrooms.safetyNetAlerts.model.MedicalRecord;
+import com.openclassrooms.safetyNetAlerts.model.Person;
 
-public class AdultService {
+public class PersonInfoService {
 
-    private static PersonDAO personDAO = new PersonDAO();
-    private static MedicalRecordDAO medicalRecordDAO = new MedicalRecordDAO();
+    private static final MedicalRecordDAO medicalRecordDAO = new MedicalRecordDAO();
 
-    public static class AdultBuilder {
+    public static class PersonInfoBuilder {
 
-        Person person;
-        MedicalRecord medicalRecord;
+        private Person person;
 
-        public AdultBuilder withFullName(Person person, MedicalRecord medicalRecord) {
+        public PersonInfoBuilder withPerson(Person person) {
             this.person = person;
-            this.medicalRecord = medicalRecord;
             return this;
         }
 
-        public Adult build() {
-            Adult adult = new Adult();
-            adult.setFirstName(person.getFirstName());
-            adult.setLastName(person.getLastName());
-            adult.setAddress(person.getAddress());
-            adult.setCity(person.getCity());
-            adult.setZip(person.getZip());
-            adult.setPhone(person.getPhone());
-            adult.setEmail(person.getEmail());
-            adult.setMedicalRecord(medicalRecord);
-            return adult;
+        public PersonInfo build() {
+
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.setFirstName(person.getFirstName());
+            personInfo.setLastName(person.getLastName());
+            personInfo.setAddress(person.getAddress());
+            personInfo.setCity(person.getCity());
+            personInfo.setZip(person.getZip());
+            personInfo.setPhone(person.getPhone());
+            personInfo.setEmail(person.getEmail());
+
+            MedicalRecord medicalRecord = medicalRecordDAO.getByName(person.getFirstName(), person.getLastName());
+            personInfo.setMedicalRecord(medicalRecord);
+            personInfo.setAge(GetAge.getAge(medicalRecord.getBirthdate()));
+
+            return personInfo;
         }
     }
 }
