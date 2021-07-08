@@ -1,26 +1,26 @@
-
 package com.openclassrooms.safetyNetAlerts.controller;
 
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.openclassrooms.safetyNetAlerts.constants.FilterName;
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
-import com.openclassrooms.safetyNetAlerts.service.CoverageByStationService;
+import com.openclassrooms.safetyNetAlerts.model.MyMap;
+import com.openclassrooms.safetyNetAlerts.service.CollectDataService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
- * This url returns a list of people covered by the corresponding fire station.
- * So, if the station number = 1, it returns the inhabitants covered by station number 1.
- * The list includes the following specific information: first name, last name, address, phone number.
- * It also provides a count of the number of adults and the number of children (any individual aged 18 or under) in the area served.
+ * Collects information about the coverage of a specific firestation
  */
 
 
@@ -30,24 +30,37 @@ public class FirestationRequestController {
 
     private static final Logger logger = LogManager.getLogger(FirestationRequestController.class);
 
+    @Autowired
+    CollectDataService collectDataService;
+
+
+    /**
+     * Search a list of people covered by a firestation
+     *
+     * @param station The station number of the firestation concerned by the alert
+     * @return A list of people covered by the corresponding firestation. The list includes the following specific information: first name, last name, address, phone number. It also provides a count of the number of adults and the number of children (any individual aged 18 or under) in the area served.
+     */
     @GetMapping
-    public MappingJacksonValue getDataPerFirestation(@RequestParam("stationNumber") String station) {
+    public MappingJacksonValue getDataPerFirestation(@RequestParam("stationNumber") String station) throws BadRequestException {
 
         if (station.isEmpty()) {
             logger.error("Station number is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            FilterProvider filters = new SimpleFilterProvider()
-                    .addFilter(FilterName.PERSON_INFO, SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "address", "phone"));
 
-            MappingJacksonValue response = new MappingJacksonValue(new CoverageByStationService.CoverageByStationBuilder().withStation(station).build());
+            List<MyMap> myMaps = collectDataService.buildMaps()
+                    .stream()
+                    .filter(mapOfList -> mapOfList.getStation().equals(station))
+                    .collect(Collectors.toList());
 
-            response.setFilters(filters);
-
+            FilterProvider filterProvider = new SimpleFilterProvider().addFilter("myMapFilter", SimpleBeanPropertyFilter.serializeAllExcept("station"))
+                    .addFilter("houseFilter", SimpleBeanPropertyFilter.serializeAllExcept("city", "zip"))
+                    .addFilter("myPersonFilter", SimpleBeanPropertyFilter.serializeAllExcept("email", "myMedicalRecord"));
+            MappingJacksonValue response = new MappingJacksonValue(myMaps);
+            response.setFilters(filterProvider);
+            logger.info("Request correctly sent");
             return response;
         }
-
-
     }
 }
 

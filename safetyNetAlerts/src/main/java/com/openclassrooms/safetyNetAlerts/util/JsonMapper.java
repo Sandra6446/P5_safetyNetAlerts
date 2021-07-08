@@ -1,7 +1,7 @@
 package com.openclassrooms.safetyNetAlerts.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.openclassrooms.safetyNetAlerts.model.ObjectFromJson;
+import com.openclassrooms.safetyNetAlerts.model.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,50 +9,49 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class read and write in Json data file.
+ * Reads and writes in Json data file.
  */
 public class JsonMapper {
 
     /**
      * Data file path.
      */
-    //@Value("${chemin_json}")
-    private final String chemin = "C:/Users/Maysonnave/Documents/OpenClassrooms/safetynetalert/safetyNetAlerts/src/main/resources/data.json";
+    private final String chemin = "./src/main/resources/data.json";
 
-    private static final Logger logger = LogManager.getLogger(ObjectFromJson.class);
+    private static final Logger logger = LogManager.getLogger(JsonObject.class);
 
     /**
-     * Read in data file
+     * Reads in json data file
+     *
      * @return Returns an objectFromJson if the reading succeed.
-     * @see ObjectFromJson
      */
-    public ObjectFromJson readJson() {
+    public JsonObject readJson() {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectFromJson objectFromJson = new ObjectFromJson();
+        JsonObject jsonObject = new JsonObject();
 
         try {
             //convert json string to object
-            objectFromJson = objectMapper.readValue(new File(chemin), ObjectFromJson.class);
+            jsonObject = objectMapper.readValue(new File(chemin), JsonObject.class);
             logger.debug("Json file correctly read.");
         } catch (IOException e) {
             logger.error("Error while JSON file reading.");
         }
 
-        return objectFromJson;
+        return jsonObject;
     }
 
     /**
-     * Write in data file
-     * @param objectFromJson The objectFromJson to be added in data file.
-     * @see ObjectFromJson
+     * Writes in data file
+     *
+     * @param jsonObject The objectFromJson to be added in data file.
      */
-    public void writeJson(ObjectFromJson objectFromJson) {
+    public void writeJson(JsonObject jsonObject) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             //convert Object to json string
-            objectMapper.writeValue(new File(chemin), objectFromJson);
+            objectMapper.writeValue(new File(chemin), jsonObject);
             logger.debug("Json file correctly written.");
         } catch (IOException e) {
             logger.error("Error while JSON file writing.");

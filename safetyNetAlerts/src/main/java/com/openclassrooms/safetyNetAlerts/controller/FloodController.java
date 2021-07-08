@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,35 +25,34 @@ import java.util.stream.Collectors;
  */
 
 @RestController
-@RequestMapping("/fire")
-public class FireController {
+@RequestMapping("/flood/stations")
+public class FloodController {
 
-    private static final Logger logger = LogManager.getLogger(FireController.class);
+    private static final Logger logger = LogManager.getLogger(FloodController.class);
 
     @Autowired
-    private CollectDataService collectDataService;
+    CollectDataService collectDataService;
 
     /**
-     * Search all the inhabitants living at the given address and the number of the firestation serving it
+     * Search all the households served by a firestation
      *
-     * @param address The address concerned by the alert
-     * @return The list of inhabitants living at the given address and the station number of the firestation serving it. The list includes the name, phone number, age and medical history (medication, dosage and allergies) of each person.
+     * @param stations The list of the station numbers of firestations concerned by the alert
+     * @return The list of all households served by the firestation. This list groups people by address. It also includes the name, phone number and age of the residents, and their medical history (medication, dosage and allergies).
      */
     @GetMapping
-    public MappingJacksonValue getDataPerAddress(@RequestParam("address") String address) throws BadRequestException {
+    public MappingJacksonValue getHouseHolds(@RequestParam("stations") Set<String> stations) throws BadRequestException {
 
-        if (address.isEmpty()) {
-            logger.error("The address is required");
+        if (stations.isEmpty()) {
+            logger.error("At less one station is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<MyMap> myMaps = collectDataService.buildMaps()
-                    .stream()
-                    .filter(myMap -> myMap.getHouses().stream().anyMatch(house -> house.getStreet().equals(address)))
-                    .peek(myMap -> myMap.filterByAddress(address))
-                    .collect(Collectors.toList());
+            List<MyMap> myMaps = new ArrayList<>();
+            for (String station : stations) {
+                myMaps.addAll(collectDataService.buildMaps().stream().filter(map -> map.getStation().equals(station)).collect(Collectors.toList()));
+            }
 
-            FilterProvider filterProvider = new SimpleFilterProvider().addFilter("myMapFilter", SimpleBeanPropertyFilter.serializeAllExcept("nbOfAdults", "nbOfChildren"))
-                    .addFilter("houseFilter", SimpleBeanPropertyFilter.filterOutAllExcept("residents"))
+            FilterProvider filterProvider = new SimpleFilterProvider().addFilter("myMapFilter", SimpleBeanPropertyFilter.filterOutAllExcept("houses"))
+                    .addFilter("houseFilter", SimpleBeanPropertyFilter.serializeAllExcept("city", "zip"))
                     .addFilter("myPersonFilter", SimpleBeanPropertyFilter.serializeAllExcept("firstName", "email"));
             MappingJacksonValue response = new MappingJacksonValue(myMaps);
             response.setFilters(filterProvider);
@@ -60,3 +61,4 @@ public class FireController {
         }
     }
 }
+

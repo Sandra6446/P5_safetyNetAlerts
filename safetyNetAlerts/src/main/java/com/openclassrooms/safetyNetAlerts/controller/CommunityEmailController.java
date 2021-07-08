@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
 import com.openclassrooms.safetyNetAlerts.model.Contact;
-import com.openclassrooms.safetyNetAlerts.model.MyMap;
+import com.openclassrooms.safetyNetAlerts.model.House;
 import com.openclassrooms.safetyNetAlerts.service.CollectDataService;
 import com.openclassrooms.safetyNetAlerts.util.UtilsHouse;
 import org.apache.logging.log4j.LogManager;
@@ -21,37 +21,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Collects phone numbers to send emergency text messages to specific households
+ * Collects emails to send emergency messages to specific households
  */
 
 @RestController
-@RequestMapping("/phoneAlert")
-public class PhoneAlertController {
+@RequestMapping("/communityEmail")
+public class CommunityEmailController {
 
-    private static final Logger logger = LogManager.getLogger(PhoneAlertController.class);
+    private static final Logger logger = LogManager.getLogger(CommunityEmailController.class);
 
     @Autowired
     CollectDataService collectDataService;
 
     /**
-     * Search the phone numbers of residents served by a firestation
+     * Search all the phone numbers of residents served by the firestation
      *
-     * @param firestation The station number of the firestation concerned by the alert
-     * @return The list of phone numbers of residents served by the firestation
+     * @param city The city concerned by the alert
+     * @return A list of the phone numbers of residents served by the firestation
      */
     @GetMapping
-    public MappingJacksonValue getPhoneNumbers(@RequestParam("firestation") String firestation) throws BadRequestException {
+    public MappingJacksonValue getEmails(@RequestParam("city") String city) throws BadRequestException {
 
-        if (firestation.isEmpty()) {
-            logger.error("Firestation is required");
+        if (city.isEmpty()) {
+            logger.error("City is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<MyMap> myMaps = collectDataService.buildMaps().stream().filter(map -> map.getStation().equals(firestation)).collect(Collectors.toList());
+            List<House> houses = collectDataService.buildHouses().stream().filter(house -> house.getCity().equals(city)).collect(Collectors.toList());
             Contact contact = new Contact();
-            for (MyMap myMap : myMaps) {
-                UtilsHouse.putDetailsInContact(myMap.getHouses(), contact);
-            }
-            FilterProvider filters = new SimpleFilterProvider().addFilter("contactFilter", SimpleBeanPropertyFilter.filterOutAllExcept("phoneNumbers"));
+            UtilsHouse.putDetailsInContact(houses, contact);
+
+            FilterProvider filters = new SimpleFilterProvider().addFilter("contactFilter", SimpleBeanPropertyFilter.filterOutAllExcept("emails"));
             MappingJacksonValue response = new MappingJacksonValue(contact);
             response.setFilters(filters);
             logger.info("Request correctly sent");
@@ -59,4 +58,5 @@ public class PhoneAlertController {
         }
     }
 }
+
 

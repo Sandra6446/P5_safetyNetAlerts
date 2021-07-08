@@ -1,6 +1,6 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
-import com.openclassrooms.safetyNetAlerts.dao.FirestationDAO;
+import com.openclassrooms.safetyNetAlerts.dao.FirestationsDAO;
 import com.openclassrooms.safetyNetAlerts.exceptions.AlreadyInDataFileException;
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
 import com.openclassrooms.safetyNetAlerts.exceptions.NotFoundInDataFileException;
@@ -8,7 +8,6 @@ import com.openclassrooms.safetyNetAlerts.model.Firestation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +20,26 @@ import javax.validation.ValidatorFactory;
 import java.net.URI;
 import java.util.Set;
 
+/**
+ * Updates the list of firestations in the json data file
+ */
+
 @RestController
-@Import(value = FirestationDAO.class)
 @RequestMapping("/firestation")
 public class FirestationController {
 
-    @Autowired
-    private FirestationDAO firestationDAO;
-
     private static final Logger logger = LogManager.getLogger(Firestation.class);
-
     private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private static final Validator validator = factory.getValidator();
+    @Autowired
+    private FirestationsDAO firestationsDAO;
 
+    /**
+     * Adds a firestation in json data file
+     *
+     * @param firestation The firestation to be added to the data file
+     * @return The http status of the request
+     */
     @PostMapping
     public ResponseEntity<Void> add(@RequestBody Firestation firestation) throws BadRequestException {
 
@@ -48,7 +54,7 @@ public class FirestationController {
             throw new BadRequestException("One or more parameters are wrong in body request.");
         } else {
             try {
-                firestationDAO.save(firestation);
+                firestationsDAO.save(firestation);
                 logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly added.");
                 URI location = ServletUriComponentsBuilder
                         .fromCurrentRequestUri()
@@ -62,6 +68,12 @@ public class FirestationController {
         }
     }
 
+    /**
+     * Updates a firestation in the data file
+     *
+     * @param firestation The firestation to be updated in the data file
+     * @return The http status of the request
+     */
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody Firestation firestation) throws BadRequestException {
 
@@ -76,7 +88,7 @@ public class FirestationController {
             throw new BadRequestException("One or more parameters are wrong in body request.");
         } else {
             try {
-                firestationDAO.update(firestation);
+                firestationsDAO.update(firestation);
                 logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly updated.");
                 return new ResponseEntity<>(HttpStatus.OK);
             } catch (NotFoundInDataFileException ne) {
@@ -86,16 +98,22 @@ public class FirestationController {
         }
     }
 
+    /**
+     * Deletes a firestation in the data file
+     *
+     * @param firestation The firestation to be deleted in the data file
+     * @return The http status of the request
+     */
     @DeleteMapping
     public ResponseEntity<Void> delete(@RequestBody Firestation firestation) throws BadRequestException {
         if (firestation.getAddress().isEmpty()) {
             throw new BadRequestException("Firstname or Lastname are missing.");
         } else {
             try {
-                firestationDAO.remove(firestation);
+                firestationsDAO.remove(firestation);
                 logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly deleted.");
                 return new ResponseEntity<>(HttpStatus.OK);
-            } catch (NotFoundInDataFileException ne){
+            } catch (NotFoundInDataFileException ne) {
                 logger.error("There is no firestation at " + firestation.getAddress() + " in data file.");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
