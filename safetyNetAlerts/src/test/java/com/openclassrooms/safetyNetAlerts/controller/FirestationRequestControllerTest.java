@@ -43,7 +43,7 @@ public class FirestationRequestControllerTest {
     @Test
     public void getDataPerFirestation() throws Exception {
 
-        when(collectDataService.buildMaps()).thenReturn(maps);
+        when(collectDataService.buildMyMaps()).thenReturn(maps);
 
         LinkedHashMap<String, Object> resident = new LinkedHashMap<>();
         resident.put("firstName", dataServiceForTest.getAdultMyMap2().getFirstName());

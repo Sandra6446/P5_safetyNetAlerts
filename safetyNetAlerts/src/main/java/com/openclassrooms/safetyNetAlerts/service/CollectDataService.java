@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Regroups several construction and calculation classes
+ */
 @Service
 public class CollectDataService {
 
@@ -30,27 +33,42 @@ public class CollectDataService {
     @Autowired
     private MedicalRecordsDAO medicalRecordsDAO;
 
+    /**
+     * Collects the data from json file into House
+     *
+     * @return A list of House
+     */
     public List<House> buildHouses() {
         List<House> houses = new ArrayList<>();
 
         for (Person person : personsDAO.getAll()) {
-            UtilsMyPerson.putMyPersonInAHouse(houses, this.convertToAPersonne(person),new Address(person.getAddress(), person.getCity(), person.getZip()));
+            UtilsMyPerson.putMyPersonInAHouse(houses, this.convertToAPersonne(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
         }
 
         return houses;
     }
 
+    /**
+     * Collects the data from json file into Family
+     *
+     * @return A list of Family
+     */
     public List<Family> buildFamilies() {
         List<Family> families = new ArrayList<>();
 
         for (Person person : personsDAO.getAll()) {
-            UtilsMyPerson.putMyPersonInAFamily(families, this.convertToAPersonne(person),new Address(person.getAddress(), person.getCity(), person.getZip()));
+            UtilsMyPerson.putMyPersonInAFamily(families, this.convertToAPersonne(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
         }
 
         return families;
     }
 
-    public List<MyMap> buildMaps() {
+    /**
+     * Collects the data from json file into MyMap
+     *
+     * @return A list of MyMap
+     */
+    public List<MyMap> buildMyMaps() {
         List<MyMap> myMaps = new ArrayList<>();
         List<House> houses = buildHouses();
         for (Firestation firestation : firestationsDAO.getAll()) {
@@ -59,6 +77,11 @@ public class CollectDataService {
         return myMaps;
     }
 
+    /**
+     * Changes a Person into a MyPerson
+     * @param person The person to be converted
+     * @return A MyPerson
+     */
     private MyPerson convertToAPersonne(Person person) {
 
         MyPerson myPerson = new MyPerson();
@@ -80,6 +103,11 @@ public class CollectDataService {
         return myPerson;
     }
 
+    /**
+     * Calculates an age with a birthdate
+     * @param birthdate The birthdate used to calculate the age
+     * @return An age
+     */
     private int getAge(String birthdate) {
         DateTime today = new DateTime();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy").withLocale(Locale.FRENCH);

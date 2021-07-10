@@ -46,7 +46,7 @@ public class PhoneAlertController {
             logger.error("Firestation is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<MyMap> myMaps = collectDataService.buildMaps().stream().filter(map -> map.getStation().equals(firestation)).collect(Collectors.toList());
+            List<MyMap> myMaps = collectDataService.buildMyMaps().stream().filter(map -> map.getStation().equals(firestation)).collect(Collectors.toList());
             Contact contact = new Contact();
             for (MyMap myMap : myMaps) {
                 UtilsHouse.putDetailsInContact(myMap.getHouses(), contact);

@@ -4,18 +4,38 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 
 /**
- * This class represents a person.
+ * Represents a person.
+ *
+ * @see Person
  */
 
 @Data
 @JsonFilter("myPersonFilter")
 public class MyPerson {
 
+    /**
+     * The MyPerson's firstname
+     */
     private String firstName;
+    /**
+     * The MyPerson's lastname
+     */
     private String lastName;
+    /**
+     * The MyPerson's phone number
+     */
     private String phone;
+    /**
+     * The MyPerson's email address
+     */
     private String email;
+    /**
+     * The MyPerson's age
+     */
     private int age;
+    /**
+     * The MyPerson's MyMedicalRecord
+     */
     private MyMedicalRecord myMedicalRecord;
 
     public MyPerson() {

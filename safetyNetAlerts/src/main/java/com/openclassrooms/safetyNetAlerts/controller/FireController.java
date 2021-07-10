@@ -44,7 +44,7 @@ public class FireController {
             logger.error("The address is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<MyMap> myMaps = collectDataService.buildMaps()
+            List<MyMap> myMaps = collectDataService.buildMyMaps()
                     .stream()
                     .filter(myMap -> myMap.getHouses().stream().anyMatch(house -> house.getStreet().equals(address)))
                     .peek(myMap -> myMap.filterByAddress(address))

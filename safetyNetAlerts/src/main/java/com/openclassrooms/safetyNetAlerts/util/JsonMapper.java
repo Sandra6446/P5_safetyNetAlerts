@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.safetyNetAlerts.model.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +13,14 @@ import java.io.IOException;
 /**
  * Reads and writes in Json data file.
  */
+@Component
 public class JsonMapper {
 
     /**
      * Data file path.
      */
-    private final String chemin = "./src/main/resources/data.json";
+    @Value("${cheminJson}")
+    private String chemin = "./src/main/resources/data.json";
 
     private static final Logger logger = LogManager.getLogger(JsonObject.class);
 
@@ -29,6 +33,7 @@ public class JsonMapper {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonObject jsonObject = new JsonObject();
+        System.out.println (chemin);
 
         try {
             //convert json string to object

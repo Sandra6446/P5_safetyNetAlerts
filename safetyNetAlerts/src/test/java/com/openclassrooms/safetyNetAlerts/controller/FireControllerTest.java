@@ -44,7 +44,7 @@ public class FireControllerTest {
     @Test
     public void getDataPerAddress() throws Exception {
 
-        when(collectDataService.buildMaps()).thenReturn(maps);
+        when(collectDataService.buildMyMaps()).thenReturn(maps);
 
         LinkedHashMap<String, Object> myMedicalRecord = new LinkedHashMap<>();
         myMedicalRecord.put("medications", dataServiceForTest.getAdultMyMap2().getMyMedicalRecord().getMedications());

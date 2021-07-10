@@ -48,7 +48,7 @@ public class FloodController {
         } else {
             List<MyMap> myMaps = new ArrayList<>();
             for (String station : stations) {
-                myMaps.addAll(collectDataService.buildMaps().stream().filter(map -> map.getStation().equals(station)).collect(Collectors.toList()));
+                myMaps.addAll(collectDataService.buildMyMaps().stream().filter(map -> map.getStation().equals(station)).collect(Collectors.toList()));
             }
 
             FilterProvider filterProvider = new SimpleFilterProvider().addFilter("myMapFilter", SimpleBeanPropertyFilter.filterOutAllExcept("houses"))

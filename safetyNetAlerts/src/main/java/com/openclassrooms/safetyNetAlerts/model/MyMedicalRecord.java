@@ -5,12 +5,20 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * This class represents the medical record of a person.
+ * Represents the medical record of a MyPerson
+ *
+ * @see MedicalRecord
  */
 @Data
 public class MyMedicalRecord {
 
+    /**
+     * The list of MyPerson's medications
+     */
     private List<String> medications;
+    /**
+     * The list of MyPerson's allergies
+     */
     private List<String> allergies;
 
     public MyMedicalRecord(MedicalRecord medicalRecord) {

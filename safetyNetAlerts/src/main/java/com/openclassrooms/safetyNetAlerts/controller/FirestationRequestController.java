@@ -48,7 +48,7 @@ public class FirestationRequestController {
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
 
-            List<MyMap> myMaps = collectDataService.buildMaps()
+            List<MyMap> myMaps = collectDataService.buildMyMaps()
                     .stream()
                     .filter(mapOfList -> mapOfList.getStation().equals(station))
                     .collect(Collectors.toList());

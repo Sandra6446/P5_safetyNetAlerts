@@ -9,17 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a family with children.
+ * Represents the list of all the peaple living in the same place, with distinction between adults and children.
+ *
+ * @see House
  */
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @JsonFilter("familyFilter")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Family extends Address {
 
+    /**
+     * A list of all family's member under 18 years old
+     */
     @JsonFilter("childrenFilter")
     private List<MyPerson> children;
+    /**
+     * A list of all family's member over 18 years old
+     */
     @JsonFilter("adultsFilter")
     private List<MyPerson> adults;
 
@@ -35,6 +42,11 @@ public class Family extends Address {
         this.adults = adults;
     }
 
+    /**
+     * Adds a MyPerson in the Family
+     *
+     * @param myPerson The MyPerson to be added
+     */
     public void addFamilyMember(MyPerson myPerson) {
         if (myPerson.getAge() < 18) {
             this.children.add(myPerson);

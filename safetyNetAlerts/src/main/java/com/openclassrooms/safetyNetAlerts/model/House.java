@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents the list of all the peaple living in the same place.
+ * Represents the list of all the people living in the same place, without distinction between adults and children.
+ *
+ * @see Family
  */
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,6 +18,9 @@ import java.util.List;
 @JsonFilter("houseFilter")
 public class House extends Address {
 
+    /**
+     * A list of all the house's residents
+     */
     private List<MyPerson> residents;
 
     public House(String address, String city, int zip) {
@@ -28,6 +33,11 @@ public class House extends Address {
         this.residents = residents;
     }
 
+    /**
+     * Adds a house's member
+     *
+     * @param myPerson The MyPerson to be added
+     */
     public void addResident(MyPerson myPerson) {
         this.residents.add(myPerson);
     }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class represents an address.
+ * Represents the coverage of a Firestation
  */
 
 @Data
@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MyMap extends MyFirestation {
 
+    /**
+     * All the House covered by the station
+     */
     private List<House> houses;
 
     public MyMap(String station) {
@@ -33,6 +36,10 @@ public class MyMap extends MyFirestation {
         this.houses.addAll(houses);
     }
 
+    /**
+     * Filters the MyMap's houses by address
+     * @param address The address required
+     */
     public void filterByAddress(String address) {
         this.houses = houses.stream().filter(house -> house.getStreet().equals(address)).collect(Collectors.toList());
     }

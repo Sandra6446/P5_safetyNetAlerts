@@ -42,7 +42,7 @@ public class PhoneAlertControllerTest {
 
     @Test
     public void getPhoneNumbers() throws Exception {
-        when(collectDataService.buildMaps()).thenReturn(maps);
+        when(collectDataService.buildMyMaps()).thenReturn(maps);
 
         mockMvc.perform(get("/phoneAlert?firestation=1"))
                 .andExpect(status().isOk())

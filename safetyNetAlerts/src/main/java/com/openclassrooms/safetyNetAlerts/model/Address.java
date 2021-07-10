@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * Represents an address
  */
-
 @Data
 public class Address {
 
@@ -26,5 +25,8 @@ public class Address {
         this.street = address;
         this.city = city;
         this.zip = zip;
+    }
+
+    public Address() {
     }
 }

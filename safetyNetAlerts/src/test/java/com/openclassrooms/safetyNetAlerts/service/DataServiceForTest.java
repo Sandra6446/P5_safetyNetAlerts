@@ -3,6 +3,7 @@ package com.openclassrooms.safetyNetAlerts.service;
 import com.openclassrooms.safetyNetAlerts.model.*;
 import lombok.Data;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

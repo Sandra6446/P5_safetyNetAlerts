@@ -3,14 +3,24 @@ package com.openclassrooms.safetyNetAlerts.model;
 import lombok.Data;
 
 /**
- * This class represents a firehouse.
+ * Represents a fire station.
+ * @see Firestation
  */
 
 @Data
 public class MyFirestation {
 
+    /**
+     * The fire station number
+     */
     private String station;
+    /**
+     * The number of adults covered by the fire station
+     */
     private int nbOfAdults;
+    /**
+     * The number of children covered by the fire station
+     */
     private int nbOfChildren;
 
     public MyFirestation(String station) {
