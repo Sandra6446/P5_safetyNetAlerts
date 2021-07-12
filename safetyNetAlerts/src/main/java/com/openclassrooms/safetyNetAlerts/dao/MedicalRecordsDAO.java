@@ -7,6 +7,7 @@ import com.openclassrooms.safetyNetAlerts.model.MedicalRecord;
 import com.openclassrooms.safetyNetAlerts.util.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class MedicalRecordsDAO implements IDataInJsonDao<MedicalRecord> {
 
     private static final Logger logger = LogManager.getLogger(MedicalRecordsDAO.class);
 
-    private final JsonMapper jsonMapper = new JsonMapper();
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /**
      * Reads the list of medicalRecords in json data file

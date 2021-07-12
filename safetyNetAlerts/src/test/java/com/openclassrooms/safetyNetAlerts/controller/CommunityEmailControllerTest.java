@@ -3,7 +3,7 @@ package com.openclassrooms.safetyNetAlerts.controller;
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
 import com.openclassrooms.safetyNetAlerts.model.House;
 import com.openclassrooms.safetyNetAlerts.service.CollectDataService;
-import com.openclassrooms.safetyNetAlerts.service.DataServiceForTest;
+import com.openclassrooms.safetyNetAlerts.util.UtilsForTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -38,8 +36,8 @@ public class CommunityEmailControllerTest {
 
     @BeforeAll
     private static void setUp() {
-        DataServiceForTest dataServiceForTest = new DataServiceForTest();
-        houses = dataServiceForTest.buildHousesForTest();
+        // A list of two houses in the same city
+        houses = UtilsForTest.housesForTest();
     }
 
     @Test
@@ -47,9 +45,10 @@ public class CommunityEmailControllerTest {
 
         when(collectDataService.buildHouses()).thenReturn(houses);
 
-            mockMvc.perform(get("/communityEmail?city=" + houses.get(0).getCity()))
+        // Contact filter check, no duplication
+        mockMvc.perform(get("/communityEmail?city=" + houses.get(0).getCity()))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.emails",is(new ArrayList<>(Arrays.asList("drk@email.com","jaboyd@email.com")))))
+                    .andExpect(jsonPath("$.emails[0]",is("drk@email.com")))
                     .andExpect(jsonPath("$.phoneNumbers").doesNotHaveJsonPath());
 
         // No house in this city

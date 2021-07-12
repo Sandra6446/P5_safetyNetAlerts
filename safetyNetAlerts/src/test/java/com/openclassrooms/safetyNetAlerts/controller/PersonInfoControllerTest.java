@@ -2,8 +2,9 @@ package com.openclassrooms.safetyNetAlerts.controller;
 
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
 import com.openclassrooms.safetyNetAlerts.model.House;
+import com.openclassrooms.safetyNetAlerts.model.MyPerson;
 import com.openclassrooms.safetyNetAlerts.service.CollectDataService;
-import com.openclassrooms.safetyNetAlerts.service.DataServiceForTest;
+import com.openclassrooms.safetyNetAlerts.util.UtilsForTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,10 @@ public class PersonInfoControllerTest {
     private CollectDataService collectDataService;
 
     private static List<House> houses;
-    private static DataServiceForTest dataServiceForTest;
 
     @BeforeAll
     private static void setUp() {
-        dataServiceForTest = new DataServiceForTest();
-        houses = dataServiceForTest.buildHousesForTest();
+        houses = UtilsForTest.housesForTest();
     }
 
     @Test
@@ -48,19 +47,21 @@ public class PersonInfoControllerTest {
         when(collectDataService.buildHouses()).thenReturn(houses);
 
         LinkedHashMap<String, List> myMedicalRecord = new LinkedHashMap<>();
-        myMedicalRecord.put("medications",dataServiceForTest.getChildMyMap1().getMyMedicalRecord().getMedications());
-        myMedicalRecord.put("allergies",dataServiceForTest.getChildMyMap1().getMyMedicalRecord().getAllergies());
+        MyPerson myPerson = houses.get(0).getResidents().get(0);
+        myMedicalRecord.put("medications", myPerson.getMyMedicalRecord().getMedications());
+        myMedicalRecord.put("allergies", myPerson.getMyMedicalRecord().getAllergies());
 
         LinkedHashMap<String, Object> child = new LinkedHashMap<>();
-        child.put("lastName",dataServiceForTest.getChildMyMap1().getLastName());
-        child.put("email",dataServiceForTest.getChildMyMap1().getEmail());
-        child.put("age",dataServiceForTest.getChildMyMap1().getAge());
+        child.put("lastName", myPerson.getLastName());
+        child.put("email", myPerson.getEmail());
+        child.put("age", myPerson.getAge());
         child.put("myMedicalRecord",myMedicalRecord);
 
-            mockMvc.perform(get("/personInfo?firstName=" + dataServiceForTest.getChildMyMap1().getFirstName() + "&lastName=" + dataServiceForTest.getChildMyMap1().getLastName()))
+        // Check filter
+            mockMvc.perform(get("/personInfo?firstName=" + myPerson.getFirstName() + "&lastName=" + myPerson.getLastName()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].residents[0]",is(child)))
-                    .andExpect(jsonPath("$[0].street",is(dataServiceForTest.getAddressMyMap1().getStreet())))
+                    .andExpect(jsonPath("$[0].street",is(houses.get(0).getStreet())))
                     .andExpect(jsonPath("$[0].city").doesNotHaveJsonPath())
                     .andExpect(jsonPath("$[0].zip").doesNotHaveJsonPath());
 

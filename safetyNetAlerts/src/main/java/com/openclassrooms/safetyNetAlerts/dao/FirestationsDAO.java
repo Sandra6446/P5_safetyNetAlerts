@@ -7,6 +7,7 @@ import com.openclassrooms.safetyNetAlerts.model.JsonObject;
 import com.openclassrooms.safetyNetAlerts.util.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
 
     private static final Logger logger = LogManager.getLogger(PersonsDAO.class);
 
-    private final JsonMapper jsonMapper = new JsonMapper();
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /**
      * Reads the list of firestations in json data file

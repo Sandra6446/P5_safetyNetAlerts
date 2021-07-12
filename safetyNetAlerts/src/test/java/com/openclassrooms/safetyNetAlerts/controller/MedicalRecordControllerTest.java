@@ -37,73 +37,81 @@ public class MedicalRecordControllerTest {
     }
 
     @Test
-    public void testadd() throws Exception {
+    public void add() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-            String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
+        String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
 
-            when(medicalRecordsDAO.save(any(MedicalRecord.class))).thenReturn(medicalRecordForTest);
-            mockMvc.perform(post("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isCreated());
+        // Test to save a MedicalRecord
+        when(medicalRecordsDAO.save(any(MedicalRecord.class))).thenReturn(medicalRecordForTest);
+        mockMvc.perform(post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isCreated());
 
-            when(medicalRecordsDAO.save(any(MedicalRecord.class))).thenThrow(AlreadyInDataFileException.class);
-            mockMvc.perform(post("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isConflict());
+        // Test to save a MedicalRecord already in data file
+        when(medicalRecordsDAO.save(any(MedicalRecord.class))).thenThrow(AlreadyInDataFileException.class);
+        mockMvc.perform(post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isConflict());
 
-            MedicalRecord medicalRecord = new MedicalRecord();
-            medicalRecordAsString = objectMapper.writeValueAsString(medicalRecord);
-            mockMvc.perform(post("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isBadRequest());
+        // Test to save an empty MedicalRecord
+        MedicalRecord medicalRecord = new MedicalRecord();
+        medicalRecordAsString = objectMapper.writeValueAsString(medicalRecord);
+        mockMvc.perform(post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void update() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-            String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
+        String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
 
-            when(medicalRecordsDAO.update(any(MedicalRecord.class))).thenReturn(medicalRecordForTest);
-            mockMvc.perform(put("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isOk());
+        // Test to update a MedicalRecord
+        when(medicalRecordsDAO.update(any(MedicalRecord.class))).thenReturn(medicalRecordForTest);
+        mockMvc.perform(put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isOk());
 
-            when(medicalRecordsDAO.update(any(MedicalRecord.class))).thenThrow(NotFoundInDataFileException.class);
-            mockMvc.perform(put("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isNotFound());
+        // Test to update a MedicalRecord not in data file
+        when(medicalRecordsDAO.update(any(MedicalRecord.class))).thenThrow(NotFoundInDataFileException.class);
+        mockMvc.perform(put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isNotFound());
 
-            MedicalRecord medicalRecord = new MedicalRecord();
-            medicalRecordAsString = objectMapper.writeValueAsString(medicalRecord);
-            mockMvc.perform(put("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isBadRequest());
+        // Test to update an empty MedicalRecord
+        MedicalRecord medicalRecord = new MedicalRecord();
+        medicalRecordAsString = objectMapper.writeValueAsString(medicalRecord);
+        mockMvc.perform(put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void remove() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-            String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
+        String medicalRecordAsString = objectMapper.writeValueAsString(medicalRecordForTest);
 
-            when(medicalRecordsDAO.remove(any(MedicalRecord.class))).thenReturn(true);
-            mockMvc.perform(delete("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isOk());
+        // Test to remove a MedicalRecord
+        when(medicalRecordsDAO.remove(any(MedicalRecord.class))).thenReturn(true);
+        mockMvc.perform(delete("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isOk());
 
-            when(medicalRecordsDAO.remove(any(MedicalRecord.class))).thenThrow(NotFoundInDataFileException.class);
-            mockMvc.perform(delete("/medicalRecord")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(medicalRecordAsString))
-                    .andExpect(status().isNotFound());
+        // Test to remove a MedicalRecord not in data file
+        when(medicalRecordsDAO.remove(any(MedicalRecord.class))).thenThrow(NotFoundInDataFileException.class);
+        mockMvc.perform(delete("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(medicalRecordAsString))
+                .andExpect(status().isNotFound());
     }
 }

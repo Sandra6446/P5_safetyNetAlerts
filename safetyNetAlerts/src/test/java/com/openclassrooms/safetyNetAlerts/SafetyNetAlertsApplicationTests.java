@@ -1,10 +1,11 @@
 package com.openclassrooms.safetyNetAlerts;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SafetyNetAlertsApplicationTests {
+public class SafetyNetAlertsApplicationTests {
 
 	@Test
 	void contextLoads() {

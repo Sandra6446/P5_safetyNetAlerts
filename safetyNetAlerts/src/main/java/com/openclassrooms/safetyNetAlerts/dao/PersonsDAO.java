@@ -7,8 +7,10 @@ import com.openclassrooms.safetyNetAlerts.model.Person;
 import com.openclassrooms.safetyNetAlerts.util.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +22,8 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
 
     private static final Logger logger = LogManager.getLogger(PersonsDAO.class);
 
-    private final JsonMapper jsonMapper = new JsonMapper();
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /**
      * Reads the list of persons in json data file
@@ -31,7 +34,8 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
     public List<Person> getAll() {
 
         JsonObject jsonObject = jsonMapper.readJson();
-        List<Person> people = jsonObject.getPersons();
+
+        List<Person> people = new ArrayList<>(jsonObject.getPersons());
 
         return people;
     }

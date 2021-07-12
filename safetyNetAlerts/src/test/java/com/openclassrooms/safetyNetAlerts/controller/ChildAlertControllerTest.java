@@ -1,9 +1,9 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
 import com.openclassrooms.safetyNetAlerts.exceptions.BadRequestException;
-import com.openclassrooms.safetyNetAlerts.model.*;
+import com.openclassrooms.safetyNetAlerts.model.Family;
 import com.openclassrooms.safetyNetAlerts.service.CollectDataService;
-import com.openclassrooms.safetyNetAlerts.service.DataServiceForTest;
+import com.openclassrooms.safetyNetAlerts.util.UtilsForTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = ChildAlertController.class)
 public class ChildAlertControllerTest {
@@ -35,43 +37,43 @@ public class ChildAlertControllerTest {
     private CollectDataService collectDataService;
 
     private static List<Family> families;
-    private static DataServiceForTest dataServiceForTest;
 
     @BeforeAll
     private static void setUp() {
-        dataServiceForTest = new DataServiceForTest();
-        families = dataServiceForTest.buildFamiliesForTest();
+        // A list of two families, the first family has a child, the second family doesn't have a child.
+        families = UtilsForTest.familiesForTest();
     }
 
     @Test
     public void getChildInfos() throws Exception {
         when(collectDataService.buildFamilies()).thenReturn(families);
 
+
+        // Family with child, filter check
         LinkedHashMap<String, Serializable> child = new LinkedHashMap<>();
-        child.put("firstName",dataServiceForTest.getChildMyMap1().getFirstName());
-        child.put("lastName",dataServiceForTest.getChildMyMap1().getLastName());
-        child.put("age",dataServiceForTest.getChildMyMap1().getAge());
+        child.put("firstName", families.get(0).getChildren().get(0).getFirstName());
+        child.put("lastName", families.get(0).getChildren().get(0).getLastName());
+        child.put("age", families.get(0).getChildren().get(0).getAge());
 
         LinkedHashMap<String, Serializable> adult = new LinkedHashMap<>();
-        adult.put("firstName",dataServiceForTest.getAdultMyMap1().getFirstName());
-        adult.put("lastName",dataServiceForTest.getAdultMyMap1().getLastName());
+        adult.put("firstName", families.get(0).getAdults().get(0).getFirstName());
+        adult.put("lastName", families.get(0).getAdults().get(0).getLastName());
 
-        // family with child, filter check
-            mockMvc.perform(get("/childAlert?address=" + families.get(0).getStreet()))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].children",is(new ArrayList<>(Collections.singletonList(child)))))
-                    .andExpect(jsonPath("$[0].adults",is(new ArrayList<>(Collections.singletonList(adult)))));
+        mockMvc.perform(get("/childAlert?address=" + families.get(0).getStreet()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].children", is(new ArrayList<>(Collections.singletonList(child)))))
+                .andExpect(jsonPath("$[0].adults", is(new ArrayList<>(Collections.singletonList(adult)))));
 
-        // family without child
+        // Family without child
         families.get(0).setChildren(new ArrayList<>());
-            mockMvc.perform(get("/childAlert?address=" + families.get(1).getStreet()))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isEmpty());
+        mockMvc.perform(get("/childAlert?address=" + families.get(1).getStreet()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
 
         // No family at this address
-            mockMvc.perform(get("/childAlert?address=nowhere"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").isEmpty());
+        mockMvc.perform(get("/childAlert?address=nowhere"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
 
         // Empty address
         assertThrows(BadRequestException.class, () -> childAlertController.getChildInfos(""));

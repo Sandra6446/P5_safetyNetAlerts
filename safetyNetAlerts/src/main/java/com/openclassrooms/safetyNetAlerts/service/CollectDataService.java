@@ -25,13 +25,19 @@ import java.util.stream.Collectors;
 public class CollectDataService {
 
     @Autowired
-    private PersonsDAO personsDAO;
+    private final PersonsDAO personsDAO;
 
     @Autowired
-    private FirestationsDAO firestationsDAO;
+    private final FirestationsDAO firestationsDAO;
 
     @Autowired
-    private MedicalRecordsDAO medicalRecordsDAO;
+    private final MedicalRecordsDAO medicalRecordsDAO;
+
+    public CollectDataService(PersonsDAO personsDAO, FirestationsDAO firestationsDAO, MedicalRecordsDAO medicalRecordsDAO) {
+        this.personsDAO = personsDAO;
+        this.firestationsDAO = firestationsDAO;
+        this.medicalRecordsDAO = medicalRecordsDAO;
+    }
 
     /**
      * Collects the data from json file into House
@@ -79,10 +85,11 @@ public class CollectDataService {
 
     /**
      * Changes a Person into a MyPerson
+     *
      * @param person The person to be converted
      * @return A MyPerson
      */
-    private MyPerson convertToAPersonne(Person person) {
+    public MyPerson convertToAPersonne(Person person) {
 
         MyPerson myPerson = new MyPerson();
         myPerson.setFirstName(person.getFirstName());
@@ -105,10 +112,11 @@ public class CollectDataService {
 
     /**
      * Calculates an age with a birthdate
+     *
      * @param birthdate The birthdate used to calculate the age
      * @return An age
      */
-    private int getAge(String birthdate) {
+    public int getAge(String birthdate) {
         DateTime today = new DateTime();
         DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy").withLocale(Locale.FRENCH);
         DateTime date = formatter.parseDateTime(birthdate);

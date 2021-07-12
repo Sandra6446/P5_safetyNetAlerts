@@ -34,25 +34,27 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void testadd() throws Exception {
+    public void add() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String personAsString = objectMapper.writeValueAsString(personForTest);
 
+        // Test to save a Person
         Mockito.when(personsDAO.save(ArgumentMatchers.any(Person.class))).thenReturn(personForTest);
         mockMvc.perform(MockMvcRequestBuilders.post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
+        // Test to save a Person already in data file
         Mockito.when(personsDAO.save(ArgumentMatchers.any(Person.class))).thenThrow(AlreadyInDataFileException.class);
         mockMvc.perform(MockMvcRequestBuilders.post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
 
+        // Test to save an empty Person
         Person person = new Person();
         personAsString = objectMapper.writeValueAsString(person);
-
         mockMvc.perform(MockMvcRequestBuilders.post("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
@@ -60,23 +62,26 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void update() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String personAsString = objectMapper.writeValueAsString(personForTest);
 
+        // Test to update a Person
         Mockito.when(personsDAO.update(ArgumentMatchers.any(Person.class))).thenReturn(personForTest);
         mockMvc.perform(MockMvcRequestBuilders.put("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
+        // Test to update a Person not in data file
         Mockito.when(personsDAO.update(ArgumentMatchers.any(Person.class))).thenThrow(NotFoundInDataFileException.class);
         mockMvc.perform(MockMvcRequestBuilders.put("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
+        // Test to update an empty Person
         Person person = new Person();
         personAsString = objectMapper.writeValueAsString(person);
         mockMvc.perform(MockMvcRequestBuilders.put("/person")
@@ -86,17 +91,19 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void remove() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String personAsString = objectMapper.writeValueAsString(personForTest);
 
+        // Test to remove a Person
         Mockito.when(personsDAO.remove(ArgumentMatchers.any(Person.class))).thenReturn(true);
         mockMvc.perform(MockMvcRequestBuilders.delete("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(personAsString))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
+        // Test to remove a Person not in data file
         Mockito.when(personsDAO.remove(ArgumentMatchers.any(Person.class))).thenThrow(NotFoundInDataFileException.class);
         mockMvc.perform(MockMvcRequestBuilders.delete("/person")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

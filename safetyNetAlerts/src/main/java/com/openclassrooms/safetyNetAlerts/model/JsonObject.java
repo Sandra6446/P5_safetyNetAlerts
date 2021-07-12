@@ -2,6 +2,7 @@ package com.openclassrooms.safetyNetAlerts.model;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,5 +24,10 @@ public class JsonObject {
      */
     private List<MedicalRecord> medicalrecords;
 
+    public JsonObject() {
+        this.persons = new ArrayList<>();
+        this.firestations = new ArrayList<>();
+        this.medicalrecords = new ArrayList<>();
+    }
 }
 

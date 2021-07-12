@@ -105,7 +105,7 @@ public class FirestationController {
      * @return The http status of the request
      */
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestBody Firestation firestation) throws BadRequestException {
+    public ResponseEntity<Void> remove(@RequestBody Firestation firestation) throws BadRequestException {
         if (firestation.getAddress().isEmpty()) {
             throw new BadRequestException("Firstname or Lastname are missing.");
         } else {

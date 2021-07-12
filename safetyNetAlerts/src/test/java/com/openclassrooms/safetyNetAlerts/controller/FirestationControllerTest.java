@@ -1,6 +1,5 @@
 package com.openclassrooms.safetyNetAlerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.safetyNetAlerts.dao.FirestationsDAO;
 import com.openclassrooms.safetyNetAlerts.exceptions.AlreadyInDataFileException;
@@ -37,74 +36,82 @@ public class FirestationControllerTest {
     }
 
     @Test
-    public void testadd() throws Exception {
+    public void add() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-            String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
+        String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
 
-            when(firestationsDAO.save(any(Firestation.class))).thenReturn(firestationForTest);
-            mockMvc.perform(post("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isCreated());
+        // Test to save a Firestation
+        when(firestationsDAO.save(any(Firestation.class))).thenReturn(firestationForTest);
+        mockMvc.perform(post("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isCreated());
 
-            when(firestationsDAO.save(any(Firestation.class))).thenThrow(AlreadyInDataFileException.class);
-            mockMvc.perform(post("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isConflict());
+        // Test to save a Firestation already in data file
+        when(firestationsDAO.save(any(Firestation.class))).thenThrow(AlreadyInDataFileException.class);
+        mockMvc.perform(post("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isConflict());
 
-            Firestation firestation = new Firestation();
-            firestationAsString = objectMapper.writeValueAsString(firestation);
-            mockMvc.perform(post("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isBadRequest());
+        // Test to save an empty Firestation
+        Firestation firestation = new Firestation();
+        firestationAsString = objectMapper.writeValueAsString(firestation);
+        mockMvc.perform(post("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void update() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-            String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
+        String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
 
-            when(firestationsDAO.update(any(Firestation.class))).thenReturn(firestationForTest);
-            mockMvc.perform(put("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isOk());
+        // Test to update a Firestation
+        when(firestationsDAO.update(any(Firestation.class))).thenReturn(firestationForTest);
+        mockMvc.perform(put("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isOk());
 
-            when(firestationsDAO.update(any(Firestation.class))).thenThrow(NotFoundInDataFileException.class);
-            mockMvc.perform(put("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isNotFound());
+        // Test to update a Firestation not in data file
+        when(firestationsDAO.update(any(Firestation.class))).thenThrow(NotFoundInDataFileException.class);
+        mockMvc.perform(put("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isNotFound());
 
-            Firestation firestation = new Firestation();
-            firestationAsString = objectMapper.writeValueAsString(firestation);
-            mockMvc.perform(put("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isBadRequest());
+        // Test to update an empty Firestation
+        Firestation firestation = new Firestation();
+        firestationAsString = objectMapper.writeValueAsString(firestation);
+        mockMvc.perform(put("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void remove() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-            String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
+        String firestationAsString = objectMapper.writeValueAsString(firestationForTest);
 
-            when(firestationsDAO.remove(any(Firestation.class))).thenReturn(true);
-            mockMvc.perform(delete("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isOk());
+        // Test to remove a Firestation
+        when(firestationsDAO.remove(any(Firestation.class))).thenReturn(true);
+        mockMvc.perform(delete("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isOk());
 
-            when(firestationsDAO.remove(any(Firestation.class))).thenThrow(NotFoundInDataFileException.class);
-            mockMvc.perform(delete("/firestation")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(firestationAsString))
-                    .andExpect(status().isNotFound());
+        // Test to remove a Firestation not in data file
+        when(firestationsDAO.remove(any(Firestation.class))).thenThrow(NotFoundInDataFileException.class);
+        mockMvc.perform(delete("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isNotFound());
     }
 }
