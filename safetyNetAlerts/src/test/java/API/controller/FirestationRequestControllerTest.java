@@ -50,7 +50,6 @@ public class FirestationRequestControllerTest {
         myResident.put("firstName", resident.getFirstName());
         myResident.put("lastName", resident.getLastName());
         myResident.put("phone", resident.getPhone());
-        myResident.put("age",resident.getAge());
 
         // Check filter
             mockMvc.perform(get("/firestation?stationNumber=2"))
