@@ -51,7 +51,7 @@ public class PersonInfoController {
         } else {
             List<House> houses = new ArrayList<>();
             for (House house : collectDataService.buildHouses()) {
-                List<MyPerson> residents = house.getResidents().stream().filter(myPerson -> myPerson.getFirstName().equals(firstName) && myPerson.getLastName().equals(lastName)).collect(Collectors.toList());
+                List<MyPerson> residents = house.getResidents().stream().filter(myPerson -> myPerson.getFirstName().equalsIgnoreCase(firstName) && myPerson.getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
                 if (!residents.isEmpty()) {
                     house.setResidents(residents);
                     houses.add(house);

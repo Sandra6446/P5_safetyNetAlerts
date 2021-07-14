@@ -55,7 +55,7 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
         // A person already in data file may not be saved.
         boolean saveAuthorized =
                 (people.stream()
-                        .noneMatch(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName())));
+                        .noneMatch(personOfList -> personOfList.getFirstName().equalsIgnoreCase(person.getFirstName()) & personOfList.getLastName().equalsIgnoreCase(person.getLastName())));
 
         if (saveAuthorized) {
             jsonObject.getPersons().add(person);
@@ -80,7 +80,7 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
         List<Person> people = jsonObject.getPersons();
 
         boolean updateOk = people.stream()
-                .filter(personOfList -> personOfList.getFirstName().equals(person.getFirstName()) & personOfList.getLastName().equals(person.getLastName()))
+                .filter(personOfList -> personOfList.getFirstName().equalsIgnoreCase(person.getFirstName()) & personOfList.getLastName().equalsIgnoreCase(person.getLastName()))
                 .peek(personOfList -> {
                     personOfList.setAddress(person.getAddress());
                     personOfList.setCity(person.getCity());
@@ -114,7 +114,7 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
 
         boolean removeOk =
                 (people.stream()
-                        .anyMatch(personOfList -> personOfList.getLastName().equals(person.getLastName()) & personOfList.getFirstName().equals(person.getFirstName())));
+                        .anyMatch(personOfList -> personOfList.getLastName().equalsIgnoreCase(person.getLastName()) & personOfList.getFirstName().equalsIgnoreCase(person.getFirstName())));
 
         if (removeOk) {
             people.remove(person);

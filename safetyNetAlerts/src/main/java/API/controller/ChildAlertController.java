@@ -46,7 +46,7 @@ public class ChildAlertController {
             logger.error("Address is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<Family> families = collectDataService.buildFamilies().stream().filter(family -> family.getStreet().equals(address) && !family.getChildren().isEmpty()).collect(Collectors.toList());
+            List<Family> families = collectDataService.buildFamilies().stream().filter(family -> family.getStreet().equalsIgnoreCase(address) && !family.getChildren().isEmpty()).collect(Collectors.toList());
             FilterProvider filterProvider = new SimpleFilterProvider().addFilter("familyFilter", SimpleBeanPropertyFilter.filterOutAllExcept("children", "adults"))
                     .addFilter("childrenFilter", SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "age"))
                     .addFilter("adultsFilter", SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName"));

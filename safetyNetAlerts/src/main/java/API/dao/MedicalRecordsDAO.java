@@ -52,7 +52,7 @@ public class MedicalRecordsDAO implements IDataInJsonDao<MedicalRecord> {
         // A medical record already in data file may not be saved.
         boolean saveAuthorized =
                 (medicalRecords.stream()
-                        .noneMatch(medicalRecordOfList -> medicalRecordOfList.getFirstName().equals(medicalRecord.getFirstName()) & medicalRecordOfList.getLastName().equals(medicalRecord.getLastName())));
+                        .noneMatch(medicalRecordOfList -> medicalRecordOfList.getFirstName().equalsIgnoreCase(medicalRecord.getFirstName()) & medicalRecordOfList.getLastName().equalsIgnoreCase(medicalRecord.getLastName())));
 
         if (saveAuthorized) {
             jsonObject.getMedicalrecords().add(medicalRecord);
@@ -77,7 +77,7 @@ public class MedicalRecordsDAO implements IDataInJsonDao<MedicalRecord> {
         List<MedicalRecord> medicalRecords = jsonObject.getMedicalrecords();
 
         boolean updateOk = medicalRecords.stream()
-                .filter(medicalRecordOfList -> medicalRecordOfList.getFirstName().equals(medicalRecord.getFirstName()) & medicalRecordOfList.getLastName().equals(medicalRecord.getLastName()))
+                .filter(medicalRecordOfList -> medicalRecordOfList.getFirstName().equalsIgnoreCase(medicalRecord.getFirstName()) & medicalRecordOfList.getLastName().equalsIgnoreCase(medicalRecord.getLastName()))
                 .peek(personOfList -> {
                     personOfList.setFirstName(medicalRecord.getFirstName());
                     personOfList.setLastName(medicalRecord.getLastName());
@@ -111,7 +111,7 @@ public class MedicalRecordsDAO implements IDataInJsonDao<MedicalRecord> {
 
         boolean removeOk =
                 (medicalRecords.stream()
-                        .anyMatch(medicalRecordOfList -> medicalRecordOfList.getLastName().equals(medicalRecord.getLastName()) & medicalRecordOfList.getFirstName().equals(medicalRecord.getFirstName())));
+                        .anyMatch(medicalRecordOfList -> medicalRecordOfList.getLastName().equalsIgnoreCase(medicalRecord.getLastName()) & medicalRecordOfList.getFirstName().equalsIgnoreCase(medicalRecord.getFirstName())));
 
         if (removeOk) {
             medicalRecords.remove(medicalRecord);

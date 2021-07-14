@@ -48,7 +48,7 @@ public class CommunityEmailController {
             logger.error("City is required");
             throw new BadRequestException("One or more parameters are wrong in request.");
         } else {
-            List<House> houses = collectDataService.buildHouses().stream().filter(house -> house.getCity().equals(city)).collect(Collectors.toList());
+            List<House> houses = collectDataService.buildHouses().stream().filter(house -> house.getCity().equalsIgnoreCase(city)).collect(Collectors.toList());
             Contact contact = new Contact();
             UtilsHouse.putDetailsInContact(houses, contact);
 

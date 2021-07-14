@@ -1,10 +1,10 @@
 package API.dao;
 
+import API.exceptions.AlreadyInDataFileException;
+import API.exceptions.NotFoundInDataFileException;
 import API.model.Firestation;
 import API.model.JsonObject;
 import API.util.JsonMapper;
-import API.exceptions.AlreadyInDataFileException;
-import API.exceptions.NotFoundInDataFileException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
         // A firestation already in data file may not be saved.
         boolean saveAuthorized =
                 (firestations.stream()
-                        .noneMatch(firestationOfList -> firestationOfList.getAddress().equals(firestation.getAddress()) & firestationOfList.getStation().equals(firestation.getStation())));
+                        .noneMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()) & firestationOfList.getStation().equals(firestation.getStation())));
 
         if (saveAuthorized) {
             jsonObject.getFirestations().add(firestation);
@@ -75,9 +75,9 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
 
         boolean updateOk =
                 (firestations.stream()
-                        .filter(firestationOfList -> firestationOfList.getAddress().equals(firestation.getAddress()))
+                        .filter(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()))
                         .peek(firestationOfList -> firestationOfList.setStation(firestation.getStation()))
-                        .count() == 1);
+                        .count() > 0);
 
         if (updateOk) {
             jsonObject.setFirestations(firestations);
@@ -103,7 +103,7 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
 
         boolean removeOk =
                 (firestations.stream()
-                        .anyMatch(firestationOfList -> firestationOfList.getAddress().equals(firestation.getAddress())));
+                        .anyMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()) && firestationOfList.getStation().equals(firestation.getStation())));
 
         if (removeOk) {
             firestations.remove(firestation);

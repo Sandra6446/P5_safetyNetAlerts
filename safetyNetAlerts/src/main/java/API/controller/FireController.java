@@ -48,7 +48,7 @@ public class FireController {
         } else {
             List<MyMap> myMaps = collectDataService.buildMyMaps()
                     .stream()
-                    .filter(myMap -> myMap.getHouses().stream().anyMatch(house -> house.getStreet().equals(address)))
+                    .filter(myMap -> myMap.getHouses().stream().anyMatch(house -> house.getStreet().equalsIgnoreCase(address)))
                     .peek(myMap -> myMap.filterByAddress(address))
                     .collect(Collectors.toList());
 

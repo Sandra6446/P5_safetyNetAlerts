@@ -57,7 +57,7 @@ public class FirestationRequestController {
 
             FilterProvider filterProvider = new SimpleFilterProvider().addFilter("myMapFilter", SimpleBeanPropertyFilter.serializeAllExcept("station"))
                     .addFilter("houseFilter", SimpleBeanPropertyFilter.serializeAllExcept("city", "zip"))
-                    .addFilter("myPersonFilter", SimpleBeanPropertyFilter.serializeAllExcept("email", "myMedicalRecord"));
+                    .addFilter("myPersonFilter", SimpleBeanPropertyFilter.serializeAllExcept("age", "email", "myMedicalRecord"));
             MappingJacksonValue response = new MappingJacksonValue(myMaps);
             response.setFilters(filterProvider);
             logger.info("Request correctly sent");
