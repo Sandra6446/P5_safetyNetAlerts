@@ -43,7 +43,7 @@ public class FirestationController {
      */
     @ApiOperation(value = "Adds a firestation in json data file")
     @PostMapping
-    public ResponseEntity<Void> add(@RequestBody Firestation firestation) throws BadRequestException {
+    public ResponseEntity<String> add(@RequestBody Firestation firestation) throws BadRequestException {
 
         Set<ConstraintViolation<Firestation>> constraintViolations =
                 validator.validate(firestation);
@@ -57,28 +57,28 @@ public class FirestationController {
         } else {
             try {
                 firestationsDAO.save(firestation);
-                logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly added.");
+                logger.info("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly added.");
                 URI location = ServletUriComponentsBuilder
                         .fromCurrentRequestUri()
                         .buildAndExpand()
                         .toUri();
-                return ResponseEntity.created(location).build();
+                return ResponseEntity.created(location).body("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly added.");
             } catch (AlreadyInDataFileException s) {
-                logger.error("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                logger.info("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
+                return new ResponseEntity<>("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.",HttpStatus.CONFLICT);
             }
         }
     }
 
     /**
-     * Updates a firestation in the data file
+     * Updates the stations linked to an address in the data file
      *
-     * @param firestation The firestation to be updated in the data file
+     * @param firestation The firestation with the address to be completed and the station to be added
      * @return The http status of the request
      */
-    @ApiOperation("Updates a firestation in the data file")
+    @ApiOperation("Updates the stations linked to an address in the data file")
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody Firestation firestation) throws BadRequestException {
+    public ResponseEntity<String> update(@RequestBody Firestation firestation) throws BadRequestException {
 
         Set<ConstraintViolation<Firestation>> constraintViolations =
                 validator.validate(firestation);
@@ -92,11 +92,14 @@ public class FirestationController {
         } else {
             try {
                 firestationsDAO.update(firestation);
-                logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly updated.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                logger.info("Update ok");
+                return ResponseEntity.ok("Station number " + firestation.getStation() + " correctly added at the address " + firestation.getAddress() + ".");
             } catch (NotFoundInDataFileException ne) {
-                logger.error("There is no firestation at " + firestation.getAddress() + " in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info("The address " + firestation.getAddress() + " doesn't exist in data file.");
+                return new ResponseEntity<>("The address " + firestation.getAddress() + " doesn't exist in data file.",HttpStatus.NOT_FOUND);
+            } catch (AlreadyInDataFileException ae) {
+                logger.info("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
+                return new ResponseEntity<>("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.",HttpStatus.CONFLICT);
             }
         }
     }
@@ -109,17 +112,18 @@ public class FirestationController {
      */
     @ApiOperation("Deletes a firestation in the data file")
     @DeleteMapping
-    public ResponseEntity<Void> remove(@RequestBody Firestation firestation) throws BadRequestException {
+    public ResponseEntity<String> remove(@RequestBody Firestation firestation) throws BadRequestException {
         if (firestation.getAddress().isEmpty()) {
+            logger.error("Firstname or Lastname are missing.");
             throw new BadRequestException("Firstname or Lastname are missing.");
         } else {
             try {
                 firestationsDAO.remove(firestation);
-                logger.info("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " correctly deleted.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                logger.info("Firestation correctly deleted.");
+                return ResponseEntity.ok("Firestation correctly deleted.");
             } catch (NotFoundInDataFileException ne) {
-                logger.error("There is no firestation at " + firestation.getAddress() + " in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info("This firestation doesn't exist in data file.");
+                return new ResponseEntity<>("This firestation doesn't exist in data file.",HttpStatus.NOT_FOUND);
             }
         }
     }

@@ -57,33 +57,34 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
             jsonMapper.writeJson(jsonObject);
             return firestation;
         } else {
-            throw new AlreadyInDataFileException("Firestation number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
+            throw new AlreadyInDataFileException("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
         }
 
     }
 
     /**
-     * Updates a firestation in data file
+     * Updates the stations linked to an address in the data file
      *
-     * @param firestation The firestation to be updated.
-     * @return If the firestation to be updated isn't in data base, then "null" is returned, otherwise, the firestation updated is returned.
+     * @param firestation The firestation with the address to be completed and the station to be added
+     * @return If the address of the firestation to be updated isn't in data base or if the firestation already exists in data file, then "null" is returned, otherwise, the firestation updated is returned.
      */
     @Override
     public Firestation update(Firestation firestation) {
         JsonObject jsonObject = jsonMapper.readJson();
         List<Firestation> firestations = jsonObject.getFirestations();
 
-        boolean updateOk =
-                (firestations.stream()
-                        .filter(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()))
-                        .peek(firestationOfList -> firestationOfList.setStation(firestation.getStation()))
-                        .count() > 0);
-
-        if (updateOk) {
-            jsonObject.setFirestations(firestations);
-            jsonMapper.writeJson(jsonObject);
+        if (firestations.stream().noneMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()) && firestationOfList.getStation().equalsIgnoreCase(firestation.getStation()))) {
+            if ((firestations.stream().anyMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress())))) {
+                firestations.add(firestation);
+                jsonObject.setFirestations(firestations);
+                jsonMapper.writeJson(jsonObject);
+            } else {
+                // If the address doesn't exist, the firestation may not be added.
+                throw new NotFoundInDataFileException("The address " + firestation.getAddress() + " doesn't exist in data file.");
+            }
         } else {
-            throw new NotFoundInDataFileException("There is no firestation at " + firestation.getAddress() + " in data file.");
+            // A firestation already in data file should not be added.
+            throw new AlreadyInDataFileException("Station number " + firestation.getStation() + " at " + firestation.getAddress() + " already exists in data file.");
         }
 
         return firestation;
@@ -101,18 +102,14 @@ public class FirestationsDAO implements IDataInJsonDao<Firestation> {
         JsonObject jsonObject = jsonMapper.readJson();
         List<Firestation> firestations = jsonObject.getFirestations();
 
-        boolean removeOk =
-                (firestations.stream()
-                        .anyMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()) && firestationOfList.getStation().equals(firestation.getStation())));
-
-        if (removeOk) {
+        if ((firestations.stream()
+                .anyMatch(firestationOfList -> firestationOfList.getAddress().equalsIgnoreCase(firestation.getAddress()) && firestationOfList.getStation().equals(firestation.getStation())))) {
             firestations.remove(firestation);
             jsonObject.setFirestations(firestations);
             jsonMapper.writeJson(jsonObject);
         } else {
-            throw new NotFoundInDataFileException("There is no firestation at " + firestation.getAddress() + " in data file.");
+            throw new NotFoundInDataFileException("This firestation doesn't exist in data file.");
         }
-
         return true;
     }
 }

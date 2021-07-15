@@ -43,7 +43,7 @@ public class PersonController {
      */
     @ApiOperation("Adds a person in json data file")
     @PostMapping
-    public ResponseEntity<Void> add(@RequestBody Person person) throws BadRequestException {
+    public ResponseEntity<String> add(@RequestBody Person person) throws BadRequestException {
 
         Set<ConstraintViolation<Person>> constraintViolations =
                 validator.validate(person);
@@ -62,10 +62,10 @@ public class PersonController {
                         .fromCurrentRequestUri()
                         .buildAndExpand()
                         .toUri();
-                return ResponseEntity.created(location).build();
+                return ResponseEntity.created(location).body(person.getFirstName() + " " + person.getLastName() + " correctly added.");
             } catch (AlreadyInDataFileException s) {
-                logger.error(person.getFirstName() + " " + person.getLastName() + " already exists in data file.");
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                logger.info(person.getFirstName() + " " + person.getLastName() + " already exists in data file.");
+                return new ResponseEntity<>(person.getFirstName() + " " + person.getLastName() + " already exists in data file.",HttpStatus.CONFLICT);
             }
         }
     }
@@ -78,7 +78,7 @@ public class PersonController {
      */
     @ApiOperation("Updates a person in data file")
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody Person person) throws BadRequestException {
+    public ResponseEntity<String> update(@RequestBody Person person) throws BadRequestException {
 
         Set<ConstraintViolation<Person>> constraintViolations =
                 validator.validate(person);
@@ -93,10 +93,10 @@ public class PersonController {
             try {
                 personsDAO.update(person);
                 logger.info(person.getFirstName() + " " + person.getLastName() + " correctly updated.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok(person.getFirstName() + " " + person.getLastName() + " correctly updated.");
             } catch (NotFoundInDataFileException ne) {
-                logger.error(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
+                return new ResponseEntity<>(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.",HttpStatus.NOT_FOUND);
             }
         }
     }
@@ -109,17 +109,18 @@ public class PersonController {
      */
     @ApiOperation("Deletes a person in data file")
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestBody Person person) throws BadRequestException {
+    public ResponseEntity<String> delete(@RequestBody Person person) throws BadRequestException {
         if (person.getFirstName().isEmpty() || person.getLastName().isEmpty()) {
+            logger.error("Firstname or Lastname are missing.");
             throw new BadRequestException("Firstname or Lastname are missing.");
         } else {
             try {
                 personsDAO.remove(person);
                 logger.info(person.getFirstName() + " " + person.getLastName() + " correctly deleted.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok(person.getFirstName() + " " + person.getLastName() + " correctly deleted.");
             } catch (NotFoundInDataFileException ne) {
-                logger.error(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.");
+                return new ResponseEntity<>(person.getFirstName() + " " + person.getLastName() + " doesn't exist in data file.",HttpStatus.NOT_FOUND);
             }
         }
     }

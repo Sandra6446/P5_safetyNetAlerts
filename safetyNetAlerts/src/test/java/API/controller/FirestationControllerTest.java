@@ -78,12 +78,20 @@ public class FirestationControllerTest {
                 .content(firestationAsString))
                 .andExpect(status().isOk());
 
-        // Test to update a Firestation not in data file
+        // Test to update a Firestation with an unknown address
         when(firestationsDAO.update(any(Firestation.class))).thenThrow(NotFoundInDataFileException.class);
         mockMvc.perform(put("/firestation")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(firestationAsString))
                 .andExpect(status().isNotFound());
+
+        // Test to update a Firestation already in data file
+        when(firestationsDAO.update(any(Firestation.class))).thenThrow(AlreadyInDataFileException.class);
+        mockMvc.perform(put("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isConflict());
+
 
         // Test to update an empty Firestation
         Firestation firestation = new Firestation();

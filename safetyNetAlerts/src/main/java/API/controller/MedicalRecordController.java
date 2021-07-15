@@ -43,7 +43,7 @@ public class MedicalRecordController {
      */
     @ApiOperation("Adds a medicalRecord in json data file")
     @PostMapping
-    public ResponseEntity<Void> add(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
+    public ResponseEntity<String> add(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
 
         Set<ConstraintViolation<MedicalRecord>> constraintViolations =
                 validator.validate(medicalRecord);
@@ -62,10 +62,10 @@ public class MedicalRecordController {
                         .fromCurrentRequestUri()
                         .buildAndExpand()
                         .toUri();
-                return ResponseEntity.created(location).build();
+                return ResponseEntity.created(location).body("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly added.");
             } catch (AlreadyInDataFileException s) {
-                logger.error("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " already exists in data file.");
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " already exists in data file.");
+                return new ResponseEntity<>("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " already exists in data file.",HttpStatus.CONFLICT);
             }
         }
     }
@@ -78,7 +78,7 @@ public class MedicalRecordController {
      */
     @ApiOperation("Updates a medicalRecord in data file")
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
+    public ResponseEntity<String> update(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
 
         Set<ConstraintViolation<MedicalRecord>> constraintViolations =
                 validator.validate(medicalRecord);
@@ -93,10 +93,10 @@ public class MedicalRecordController {
             try {
                 medicalRecordsDAO.update(medicalRecord);
                 logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly updated.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly updated.");
             } catch (NotFoundInDataFileException ne) {
-                logger.error("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.");
+                return new ResponseEntity<>("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.",HttpStatus.NOT_FOUND);
             }
         }
     }
@@ -109,7 +109,7 @@ public class MedicalRecordController {
      */
     @ApiOperation("Deletes a medicalRecord in data file")
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
+    public ResponseEntity<String> delete(@RequestBody MedicalRecord medicalRecord) throws BadRequestException {
         Set<ConstraintViolation<MedicalRecord>> constraintViolations =
                 validator.validate(medicalRecord);
 
@@ -123,10 +123,10 @@ public class MedicalRecordController {
             try {
                 medicalRecordsDAO.remove(medicalRecord);
                 logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly deleted.");
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly deleted.");
             } catch (NotFoundInDataFileException ne) {
-                logger.error("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.");
+                return new ResponseEntity<>("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " doesn't exist in data file.",HttpStatus.NOT_FOUND);
             }
         }
     }

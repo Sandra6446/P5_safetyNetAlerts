@@ -84,6 +84,11 @@ public class FirestationControllerIT {
 
         add();
 
+        mockMvc.perform(put("/firestation")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(firestationAsString))
+                .andExpect(status().isConflict());
+
         Firestation firestation = firestationBody;
         firestation.setStation("2");
         firestationAsString = objectMapper.writeValueAsString(firestation);
