@@ -104,8 +104,8 @@ public class CollectDataService {
 
         MedicalRecord medicalRecord = medicalRecordsDAO.getAll()
                 .stream()
-                .filter(medicalRecordOfList -> medicalRecordOfList.getFirstName().equals(person
-                        .getFirstName()) & medicalRecordOfList.getLastName().equals(person.getLastName()))
+                .filter(medicalRecordOfList -> medicalRecordOfList.getFirstName().equalsIgnoreCase(person
+                        .getFirstName()) & medicalRecordOfList.getLastName().equalsIgnoreCase(person.getLastName()))
                 .collect(Collectors.toList())
                 .get(0);
 

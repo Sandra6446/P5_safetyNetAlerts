@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Reads and updates the list of medicalRecords in json data file
@@ -114,7 +115,8 @@ public class MedicalRecordsDAO implements IDataInJsonDao<MedicalRecord> {
                         .anyMatch(medicalRecordOfList -> medicalRecordOfList.getLastName().equalsIgnoreCase(medicalRecord.getLastName()) & medicalRecordOfList.getFirstName().equalsIgnoreCase(medicalRecord.getFirstName())));
 
         if (removeOk) {
-            medicalRecords.remove(medicalRecord);
+            medicalRecords.removeAll(medicalRecords.stream()
+                    .filter(medicalRecordOfList -> medicalRecordOfList.getLastName().equalsIgnoreCase(medicalRecord.getLastName()) & medicalRecordOfList.getFirstName().equalsIgnoreCase(medicalRecord.getFirstName())).collect(Collectors.toList()));
             jsonObject.setMedicalrecords(medicalRecords);
             jsonMapper.writeJson(jsonObject);
         } else {

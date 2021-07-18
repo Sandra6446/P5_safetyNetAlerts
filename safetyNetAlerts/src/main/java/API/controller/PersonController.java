@@ -62,7 +62,7 @@ public class PersonController {
                         .fromCurrentRequestUri()
                         .buildAndExpand()
                         .toUri();
-                return ResponseEntity.created(location).body(person.getFirstName() + " " + person.getLastName() + " correctly added.");
+                return ResponseEntity.created(location).body(person.getFirstName() + " " + person.getLastName() + " correctly added. The corresponding MedicalRecord must be added.");
             } catch (AlreadyInDataFileException s) {
                 logger.info(person.getFirstName() + " " + person.getLastName() + " already exists in data file.");
                 return new ResponseEntity<>(person.getFirstName() + " " + person.getLastName() + " already exists in data file.",HttpStatus.CONFLICT);

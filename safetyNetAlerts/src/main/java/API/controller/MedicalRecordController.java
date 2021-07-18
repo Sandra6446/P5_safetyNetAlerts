@@ -57,7 +57,7 @@ public class MedicalRecordController {
         } else {
             try {
                 medicalRecordsDAO.save(medicalRecord);
-                logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly added.");
+                logger.info("The medical record of " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName() + " correctly added. The corresponding Person must be added.");
                 URI location = ServletUriComponentsBuilder
                         .fromCurrentRequestUri()
                         .buildAndExpand()

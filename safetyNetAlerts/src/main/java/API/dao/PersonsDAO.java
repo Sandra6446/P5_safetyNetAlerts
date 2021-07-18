@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Reads and update the list of persons in json data file
@@ -117,7 +118,8 @@ public class PersonsDAO implements IDataInJsonDao<Person> {
                         .anyMatch(personOfList -> personOfList.getLastName().equalsIgnoreCase(person.getLastName()) & personOfList.getFirstName().equalsIgnoreCase(person.getFirstName())));
 
         if (removeOk) {
-            people.remove(person);
+            people.removeAll(people.stream()
+                    .filter(personOfList -> personOfList.getLastName().equalsIgnoreCase(person.getLastName()) & personOfList.getFirstName().equalsIgnoreCase(person.getFirstName())).collect(Collectors.toList()));
             jsonObject.setPersons(people);
             jsonMapper.writeJson(jsonObject);
         } else {
