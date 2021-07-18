@@ -53,6 +53,6 @@ class CollectDataServiceTest {
 
     @Test
     public void convertPerson() {
-        Assertions.assertEquals(UtilsForTest.myPersonsForTest().get(0), collectDataService.convertToAPersonne(person));
+        Assertions.assertEquals(UtilsForTest.myPersonsForTest().get(0), collectDataService.convertToMyPerson(person));
     }
 }

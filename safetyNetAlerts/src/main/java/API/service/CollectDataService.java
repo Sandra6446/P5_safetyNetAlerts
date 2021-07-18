@@ -53,7 +53,7 @@ public class CollectDataService {
         List<House> houses = new ArrayList<>();
 
         for (Person person : personsDAO.getAll()) {
-            UtilsMyPerson.putMyPersonInAHouse(houses, this.convertToAPersonne(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
+            UtilsMyPerson.putMyPersonInAHouse(houses, this.convertToMyPerson(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
         }
 
         return houses;
@@ -68,7 +68,7 @@ public class CollectDataService {
         List<Family> families = new ArrayList<>();
 
         for (Person person : personsDAO.getAll()) {
-            UtilsMyPerson.putMyPersonInAFamily(families, this.convertToAPersonne(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
+            UtilsMyPerson.putMyPersonInAFamily(families, this.convertToMyPerson(person), new Address(person.getAddress(), person.getCity(), person.getZip()));
         }
 
         return families;
@@ -94,7 +94,7 @@ public class CollectDataService {
      * @param person The Person to be converted
      * @return A MyPerson
      */
-    public MyPerson convertToAPersonne(Person person) {
+    public MyPerson convertToMyPerson(Person person) {
 
         MyPerson myPerson = new MyPerson();
         myPerson.setFirstName(person.getFirstName());
